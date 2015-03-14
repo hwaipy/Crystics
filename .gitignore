@@ -31,3 +31,5 @@ xchart-demo/*.png
 *.svg
 *.pdf
 *.eps
+
+.jar

@@ -13,7 +13,7 @@ and open the template in the editor.
 
 <!-- TODO define your own vocabulary/syntax. Example follows:  -->
 
-<!ELEMENT sellmeier (medium+)>
+<!ELEMENT mediums (medium+)>
 <!ELEMENT medium (symbol,name,alias*,refractive+)>
 <!ELEMENT symbol (#PCDATA)>
 <!ELEMENT name (#PCDATA)>
@@ -22,15 +22,17 @@ and open the template in the editor.
 <!ELEMENT range (from,to)>
 <!ELEMENT from (#PCDATA)>
 <!ELEMENT to (#PCDATA)>
-<!ELEMENT nx (formula)>
-<!ELEMENT ny (formula)>
-<!ELEMENT nz (formula)>
-<!ELEMENT ne (formula)>
-<!ELEMENT no (formula)>
-<!ELEMENT formula ((system|external),coefficients)>
-<!ELEMENT system (#PCDATA)>
-<!ELEMENT external (#PCDATA)>
+<!ELEMENT nx (refractive-model)>
+<!ELEMENT ny (refractive-model)>
+<!ELEMENT nz (refractive-model)>
+<!ELEMENT ne (refractive-model)>
+<!ELEMENT no (refractive-model)>
+<!ELEMENT refractive-model ((system|external))>
+<!ELEMENT system (sellmeier)>
+<!ELEMENT sellmeier (formula,coefficients)>
+<!ELEMENT formula (#PCDATA)>
 <!ELEMENT coefficients (#PCDATA)>
+<!ELEMENT external (#PCDATA)>
 <!ELEMENT reference ((doi|reference-id),description?)>
 <!ELEMENT doi (#PCDATA)>
 <!ELEMENT reference-id (#PCDATA)>

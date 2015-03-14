@@ -3,12 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hwaipy.crystics.input;
+package com.hwaipy.crystics;
 
 /**
  *
  * @author Hwaipy
  */
-public class SellmeierXMLLoader {
+public class Medium {
+
+  private final String symbol;
+
+  public Medium(String symbol) {
+    this.symbol = null;
+  }
 
 }

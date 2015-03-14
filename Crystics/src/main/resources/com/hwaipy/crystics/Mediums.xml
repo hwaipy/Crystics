@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!DOCTYPE mediums PUBLIC "-//Hwaipy//DTD Sellmeier 1.0//EN" "http://www.hwaipy.com/crystics/Sellmeier.dtd">
+
+<mediums>
+  <medium>
+    <symbol>KTiOPO4</symbol>
+    <name>potassium titanyl phosphate</name>
+    <alias>KTP</alias>
+    <refractive>
+      <range>
+        <from>0.43</from>
+        <to>3.54</to>
+      </range>
+      <nx>
+        <refractive-model>
+          <system>
+            <sellmeier>
+              <formula>4</formula>
+              <coefficients>3.29100,0.04140,0,0.03978,1,9.35522,0,31.45571,1</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </nx>
+      <ny>
+        <refractive-model>          
+          <system>
+            <sellmeier>
+              <formula>4</formula>
+              <coefficients>3.45018,0.04341,0,0.04597,1,16.98825,0,39.43799,1</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </ny>
+      <nz>
+        <refractive-model>          
+          <system>
+            <sellmeier>
+              <formula>4</formula>
+              <coefficients>4.59423,0.06206,0,0.04763,1,110.80672,0,86.12171,1</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </nz>
+      <reference>
+        <doi>10.1364/AO.41.005040</doi>
+        <description>K. Kato and E. Takaoka. Sellmeier and thermo-optic dispersion formulas for KTP, Appl. Opt. 41, 5040-5044 (2002).</description>
+      </reference>
+    </refractive>
+  </medium>
+  <medium>
+    <symbol>LiNbO3</symbol>
+    <name>Lithium niobate</name>
+    <alias>LN</alias>
+    <refractive>
+      <range>
+        <from>0.4</from>
+        <to>5.0</to>
+      </range>
+      <ne>
+        <refractive-model>          
+          <system>
+            <sellmeier>
+              <formula>2</formula>
+              <coefficients>0,2.9804,0.02047,0.5981,0.0666,8.9543,416.08</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </ne>
+      <no>
+        <refractive-model>
+          <system>
+            <sellmeier>
+              <formula>2</formula>
+              <coefficients>0,2.6734,0.01764,1.2290,0.05914,12.614,474.60</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </no>
+      <reference>
+        <doi>10.1364/JOSAB.14.003319</doi>
+        <description>D. E. Zelmon, D. L. Small, and D. Jundt. Infrared corrected Sellmeier coefficients for congruently grown lithium niobate and 5 mol.% magnesium oxide-doped lithium niobate, J. Opt. Soc. Am. B 14, 3319-3322 (1997)</description>
+      </reference>
+    </refractive>
+  </medium>
+</mediums>
