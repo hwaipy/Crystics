@@ -36,6 +36,11 @@ public class UnitPrefixes {
     return Collections.unmodifiableCollection(prefixMap.values());
   }
 
+  public static UnitPrefix get(String prefix) {
+    return prefixMap.get(prefix);
+  }
+
+  public static final UnitPrefix none = new UnitPrefixBuilder("", "none", 1).register().createUnitPrefix();
   public static final UnitPrefix deca = new UnitPrefixBuilder("da", "deca", 1e1).register().createUnitPrefix();
   public static final UnitPrefix hecto = new UnitPrefixBuilder("h", "hecto", 1e2).register().createUnitPrefix();
   public static final UnitPrefix kilo = new UnitPrefixBuilder("k", "kilo", 1e3).register().createUnitPrefix();

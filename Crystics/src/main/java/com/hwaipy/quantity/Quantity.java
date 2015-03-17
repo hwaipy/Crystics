@@ -5,6 +5,8 @@
  */
 package com.hwaipy.quantity;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 /**
  *
  * @author Hwaipy
@@ -70,6 +72,35 @@ public class Quantity {
 
   public Quantity power(int power) {
     return new Quantity(Math.pow(value, power), Units.DIMENSIONLESS.times(unit, power));
+  }
+
+  public static Quantity of(String quantityString) {
+    return new QuantityParser(quantityString).parse();
+  }
+
+  @Override
+  public String toString() {
+    return getValueInSI() + unit.toDimensionString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || this.getClass() != obj.getClass()) {
+      return false;
+    }
+    Quantity quantity = (Quantity) obj;
+    return getUnit().equalsDimension(quantity.getUnit())
+            && getValueInSI() == quantity.getValueInSI();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(23, 29).append(this.getValueInSI())
+            .append(this.getUnit().toDimensionString())
+            .toHashCode();
   }
 
 }

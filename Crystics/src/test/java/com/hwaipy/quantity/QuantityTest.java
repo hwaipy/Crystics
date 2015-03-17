@@ -13,6 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.hwaipy.quantity.Units.*;
 import static com.hwaipy.quantity.UnitPrefixes.*;
+import java.util.Collection;
 
 /**
  *
@@ -39,9 +40,6 @@ public class QuantityTest {
   public void tearDown() {
   }
 
-  /**
-   * Test of getValue method, of class Quantity.
-   */
   @Test
   public void testCalculation() {
     Quantity timeStart = new Quantity(30, s);
@@ -53,6 +51,20 @@ public class QuantityTest {
     assertEquals(5, duration.getValue(s), 0.0);
     assertEquals(5000000000.0, duration.getValue(s.prefix(nano)), 0.0);
     assertEquals(0.005, duration.getValue(s.prefix(kilo)), 0.0);
+
+    assertEquals(new Quantity(3e8, m.devide(s)), Quantity.of("3e8m/s"));
+    assertEquals(new Quantity(16.7e-12, m.times(A)), Quantity.of("16.7E0mm*nA"));
+  }
+
+  @Test
+  public void testParser() {
+    Collection<Unit> registeredUnits = Units.getRegisteredUnits();
+    for (Unit unit : registeredUnits) {
+      Quantity parsedQuantity = new QuantityParser(unit.toUnitString()).parse();
+      assertTrue(unit.equalsDimension(parsedQuantity.getUnit()));
+      assertEquals(unit.getFactor(), parsedQuantity.getValueInSI(), 0.0);
+    }
+
   }
 
 }

@@ -29,12 +29,12 @@ public class Units {
     }
   }
 
-  public static Unit of(String unitString) throws UnitException {
-    return new UnitParser(unitString).parse();
-  }
-
   public static Collection<Unit> getRegisteredUnits() {
     return Collections.unmodifiableCollection(unitMap.values());
+  }
+
+  public static Unit get(String token) {
+    return unitMap.get(token);
   }
 
   //SI Base Units
