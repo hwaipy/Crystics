@@ -43,7 +43,7 @@ public class UnitPrefixBuilder {
   }
 
   public UnitPrefixBuilder register() {
-    UnitPrefixs.register(createUnitPrefix());
+    UnitPrefixes.register(createUnitPrefix());
     return this;
   }
 

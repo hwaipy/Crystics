@@ -5,15 +5,17 @@
  */
 package com.hwaipy.quantity;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
  * @author Hwaipy 2015-3-15
  */
-public class UnitPrefixs {
+public class UnitPrefixes {
 
-  public static final HashMap<String, UnitPrefix> prefixMap = new HashMap();
-  public static final HashMap<String, UnitPrefix> nameMap = new HashMap();
+  private static final HashMap<String, UnitPrefix> prefixMap = new HashMap();
+  private static final HashMap<String, UnitPrefix> nameMap = new HashMap();
 
   public static void register(UnitPrefix unitPrefix) {
     synchronized (UnitPrefix.class) {
@@ -28,6 +30,10 @@ public class UnitPrefixs {
       prefixMap.put(prefix, unitPrefix);
       nameMap.put(name, unitPrefix);
     }
+  }
+
+  public static Collection<UnitPrefix> getRegisteredPrefixes() {
+    return Collections.unmodifiableCollection(prefixMap.values());
   }
 
   public static final UnitPrefix deca = new UnitPrefixBuilder("da", "deca", 1e1).register().createUnitPrefix();

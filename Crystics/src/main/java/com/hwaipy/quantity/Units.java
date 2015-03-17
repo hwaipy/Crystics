@@ -5,6 +5,8 @@
  */
 package com.hwaipy.quantity;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 /**
@@ -12,7 +14,7 @@ import java.util.HashMap;
  */
 public class Units {
 
-  public static final HashMap<String, Unit> unitMap = new HashMap();
+  private static final HashMap<String, Unit> unitMap = new HashMap();
 
   public static void register(Unit unit) {
     synchronized (UnitPrefix.class) {
@@ -25,6 +27,14 @@ public class Units {
       }
       unitMap.put(name, unit);
     }
+  }
+
+  public static Unit of(String unitString) throws UnitException {
+    return new UnitParser(unitString).parse();
+  }
+
+  public static Collection<Unit> getRegisteredUnits() {
+    return Collections.unmodifiableCollection(unitMap.values());
   }
 
   //SI Base Units

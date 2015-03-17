@@ -59,6 +59,11 @@ public class UnitBuilder {
     return this;
   }
 
+  public UnitBuilder appandPower(SIBaseUnit baseUnit, int power) {
+    powers[baseUnit.ordinal()] += power;
+    return this;
+  }
+
   public UnitBuilder times(Unit unit) {
     doTimes(unit, 1);
     return this;

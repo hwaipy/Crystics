@@ -12,7 +12,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static com.hwaipy.quantity.Units.*;
-import static com.hwaipy.quantity.UnitPrefixs.*;
+import static com.hwaipy.quantity.UnitPrefixes.*;
 
 /**
  *
