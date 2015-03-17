@@ -32,4 +32,4 @@ xchart-demo/*.png
 *.pdf
 *.eps
 
-.jar
+*.jar
