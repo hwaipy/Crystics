@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<!--
+    TODO define vocabulary identification data
+    PUBLIC ID  : -//Hwaipy//DTD Sellmeier 1.0//EN
+    SYSTEM ID  : http://www.hwaipy.com/crystics/Sellmeier.dtd
+-->
+
+<!-- TODO define your own vocabulary/syntax. Example follows:  -->
+
+<!ELEMENT mediums (medium+)>
+<!ELEMENT medium (symbol,name,alias*,refractive+)>
+<!ELEMENT symbol (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT alias (#PCDATA)>
+<!ELEMENT refractive (range,((nx,ny,nz)|(ne,no)),reference)>
+<!ELEMENT range (from,to)>
+<!ELEMENT from (#PCDATA)>
+<!ELEMENT to (#PCDATA)>
+<!ELEMENT nx (refractive-model)>
+<!ELEMENT ny (refractive-model)>
+<!ELEMENT nz (refractive-model)>
+<!ELEMENT ne (refractive-model)>
+<!ELEMENT no (refractive-model)>
+<!ELEMENT refractive-model ((system|external))>
+<!ELEMENT system (sellmeier)>
+<!ELEMENT sellmeier (formula,coefficients)>
+<!ELEMENT formula (#PCDATA)>
+<!ELEMENT coefficients (#PCDATA)>
+<!ELEMENT external (#PCDATA)>
+<!ELEMENT reference ((doi|reference-id),description?)>
+<!ELEMENT doi (#PCDATA)>
+<!ELEMENT reference-id (#PCDATA)>
+<!ELEMENT description (#PCDATA)>

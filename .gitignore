@@ -1,20 +1,5 @@
-# IntelliJ
-.idea/
-*.iws
-*.iml
-*.ipr
-*.ips
-.idea/
-
-
-# Eclipse
-.settings/
-.metadata/
-.classpath
-.project
-
 # Generated
-target/
+target/*
 javadoc/
 bin/
 log/
@@ -22,14 +7,3 @@ log/
 # Misc.
 .DS_Store
 *.bak
-
-# Sample images
-xchart-demo/*.png
-*.jpg
-*.bmp
-*.gif
-*.svg
-*.pdf
-*.eps
-
-*.jar
