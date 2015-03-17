@@ -30,24 +30,24 @@ public class UnitPrefixs {
     }
   }
 
-  public static final UnitPrefix da = new UnitPrefixBuilder("da", "deca", 1e1).register().createUnitPrefix();
-  public static final UnitPrefix h = new UnitPrefixBuilder("h", "hecto", 1e2).register().createUnitPrefix();
-  public static final UnitPrefix k = new UnitPrefixBuilder("k", "kilo", 1e3).register().createUnitPrefix();
-  public static final UnitPrefix M = new UnitPrefixBuilder("M", "mega", 1e6).register().createUnitPrefix();
-  public static final UnitPrefix G = new UnitPrefixBuilder("G", "giga", 1e9).register().createUnitPrefix();
-  public static final UnitPrefix T = new UnitPrefixBuilder("T", "tera", 1e12).register().createUnitPrefix();
-  public static final UnitPrefix P = new UnitPrefixBuilder("P", "peta", 1e15).register().createUnitPrefix();
-  public static final UnitPrefix E = new UnitPrefixBuilder("E", "exa", 1e18).register().createUnitPrefix();
-  public static final UnitPrefix Z = new UnitPrefixBuilder("Z", "zetta", 1e21).register().createUnitPrefix();
-  public static final UnitPrefix Y = new UnitPrefixBuilder("Y", "yotta", 1e24).register().createUnitPrefix();
-  public static final UnitPrefix d = new UnitPrefixBuilder("d", "deci", 1e-1).register().createUnitPrefix();
-  public static final UnitPrefix c = new UnitPrefixBuilder("c", "centi", 1e-2).register().createUnitPrefix();
-  public static final UnitPrefix m = new UnitPrefixBuilder("m", "milli", 1e-3).register().createUnitPrefix();
-  public static final UnitPrefix µ = new UnitPrefixBuilder("µ", "micro", 1e-6).register().createUnitPrefix();
-  public static final UnitPrefix n = new UnitPrefixBuilder("n", "nano", 1e-9).register().createUnitPrefix();
-  public static final UnitPrefix p = new UnitPrefixBuilder("p", "pico", 1e-12).register().createUnitPrefix();
-  public static final UnitPrefix f = new UnitPrefixBuilder("f", "femto", 1e-15).register().createUnitPrefix();
-  public static final UnitPrefix a = new UnitPrefixBuilder("a", "atto", 1e-18).register().createUnitPrefix();
-  public static final UnitPrefix z = new UnitPrefixBuilder("z", "zepto", 1e-21).register().createUnitPrefix();
-  public static final UnitPrefix y = new UnitPrefixBuilder("y", "yocto", 1e-24).register().createUnitPrefix();
+  public static final UnitPrefix deca = new UnitPrefixBuilder("da", "deca", 1e1).register().createUnitPrefix();
+  public static final UnitPrefix hecto = new UnitPrefixBuilder("h", "hecto", 1e2).register().createUnitPrefix();
+  public static final UnitPrefix kilo = new UnitPrefixBuilder("k", "kilo", 1e3).register().createUnitPrefix();
+  public static final UnitPrefix mega = new UnitPrefixBuilder("M", "mega", 1e6).register().createUnitPrefix();
+  public static final UnitPrefix giga = new UnitPrefixBuilder("G", "giga", 1e9).register().createUnitPrefix();
+  public static final UnitPrefix tera = new UnitPrefixBuilder("T", "tera", 1e12).register().createUnitPrefix();
+  public static final UnitPrefix peta = new UnitPrefixBuilder("P", "peta", 1e15).register().createUnitPrefix();
+  public static final UnitPrefix exa = new UnitPrefixBuilder("E", "exa", 1e18).register().createUnitPrefix();
+  public static final UnitPrefix zetta = new UnitPrefixBuilder("Z", "zetta", 1e21).register().createUnitPrefix();
+  public static final UnitPrefix yotta = new UnitPrefixBuilder("Y", "yotta", 1e24).register().createUnitPrefix();
+  public static final UnitPrefix deci = new UnitPrefixBuilder("d", "deci", 1e-1).register().createUnitPrefix();
+  public static final UnitPrefix centi = new UnitPrefixBuilder("c", "centi", 1e-2).register().createUnitPrefix();
+  public static final UnitPrefix milli = new UnitPrefixBuilder("m", "milli", 1e-3).register().createUnitPrefix();
+  public static final UnitPrefix micro = new UnitPrefixBuilder("µ", "micro", 1e-6).register().createUnitPrefix();
+  public static final UnitPrefix nano = new UnitPrefixBuilder("n", "nano", 1e-9).register().createUnitPrefix();
+  public static final UnitPrefix pico = new UnitPrefixBuilder("p", "pico", 1e-12).register().createUnitPrefix();
+  public static final UnitPrefix femto = new UnitPrefixBuilder("f", "femto", 1e-15).register().createUnitPrefix();
+  public static final UnitPrefix atto = new UnitPrefixBuilder("a", "atto", 1e-18).register().createUnitPrefix();
+  public static final UnitPrefix zepto = new UnitPrefixBuilder("z", "zepto", 1e-21).register().createUnitPrefix();
+  public static final UnitPrefix yocto = new UnitPrefixBuilder("y", "yocto", 1e-24).register().createUnitPrefix();
 }

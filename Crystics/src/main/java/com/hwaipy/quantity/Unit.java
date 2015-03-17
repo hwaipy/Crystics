@@ -66,6 +66,16 @@ public class Unit {
     return getPowers(m, kg, s, A, K, mol, cd);
   }
 
+  public Unit prefix(UnitPrefix prefix) {
+    if (this.hasPrefix) {
+      return new UnitBuilder(this).setHasPrefix(false)
+              .setFactor(factor * prefix.getFactor()).createUnit();
+    }
+    else {
+      throw new UnitException("Unit " + this.getToken() + " can not has prefix.");
+    }
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -131,7 +141,6 @@ public class Unit {
     SIBaseUnit[] baseUnits = SIBaseUnit.values();
     int countOfSiBaseUnit = baseUnits.length;
     for (int i = 0; i < powers.length; i++) {
-      System.out.println("Power: " + powers[i] + ", Index: " + i + ", to value of " + ((powers[i] + 1) * countOfSiBaseUnit - i - 1));
       powersList.add((powers[i] + 1) * countOfSiBaseUnit - i - 1);
     }
     Collections.sort(powersList);
@@ -140,7 +149,6 @@ public class Unit {
     for (Integer powerIndex : powersList) {
       int power = powerIndex / countOfSiBaseUnit;
       int unitIndex = countOfSiBaseUnit - powerIndex % countOfSiBaseUnit - 1;
-      System.out.println("Value of " + powerIndex + ", to power=" + power + ", index=" + unitIndex);
       if (unitIndex >= countOfSiBaseUnit) {
         power -= 1;
         unitIndex -= countOfSiBaseUnit;

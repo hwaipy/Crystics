@@ -17,6 +17,9 @@ public class Units {
   public static void register(Unit unit) {
     synchronized (UnitPrefix.class) {
       String name = unit.getToken();
+      if (name == null || name.length() == 0) {
+        throw new IllegalArgumentException("Con not register an anonymous Unit.");
+      }
       if (unitMap.containsKey(name)) {
         throw new IllegalArgumentException("Unit " + name + " exists.");
       }

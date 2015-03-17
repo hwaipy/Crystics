@@ -124,4 +124,11 @@ public class UnitTest {
     }
   }
 
+  @Test
+  public void testCalculationList() {
+    assertEquals(new UnitBuilder(null, false, 1, 2, 1, -4, -1, 0, 0, 0).createUnit(), Units.Hz.times(Units.V));
+    assertEquals(new UnitBuilder(null, false, 1. / 60, 2, 1, -4, -1, 0, 0, 0).createUnit(), Units.V.devide(Units.min));
+    assertEquals(new UnitBuilder(null, false, 1. / 3600, 2, 1, -5, -1, 0, 0, 0).createUnit(), Units.V.devide(Units.min, 2));
+  }
+
 }
