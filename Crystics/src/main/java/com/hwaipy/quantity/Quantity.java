@@ -27,4 +27,14 @@ public class Quantity {
     return unit;
   }
 
+  public Quantity add(Quantity quantity) {
+    if (unit.equalsDimension(quantity.getUnit())) {
+
+      return null;
+    }
+    else {
+      throw new UnitDimensionMissmatchException(unit.toDimensionString() + "can not add with " + quantity.getUnit().toDimensionString());
+    }
+  }
+
 }

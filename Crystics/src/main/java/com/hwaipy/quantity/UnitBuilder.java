@@ -20,6 +20,10 @@ public class UnitBuilder {
   public UnitBuilder() {
   }
 
+  public UnitBuilder(Unit unit) {
+    doTimes(unit, 1);
+  }
+
   public UnitBuilder(String token, boolean hasPrefix, double factor,
           int powerM, int powerKG, int powerS, int powerA,
           int powerK, int powerMOL, int powerCD) {
@@ -53,6 +57,40 @@ public class UnitBuilder {
   public UnitBuilder setPower(SIBaseUnit baseUnit, int power) {
     powers[baseUnit.ordinal()] = power;
     return this;
+  }
+
+  public UnitBuilder times(Unit unit) {
+    doTimes(unit, 1);
+    return this;
+  }
+
+  public UnitBuilder times(Unit unit, int power) {
+    doTimes(unit, power);
+    return this;
+  }
+
+  private void doTimes(Unit unit, int power) {
+    factor *= Math.pow(unit.getFactor(), power);
+    for (SIBaseUnit baseUnit : SIBaseUnit.values()) {
+      powers[baseUnit.ordinal()] += unit.getPower(baseUnit) * power;
+    }
+  }
+
+  public UnitBuilder devide(Unit unit) {
+    doDevide(unit, 1);
+    return this;
+  }
+
+  public UnitBuilder devide(Unit unit, int power) {
+    doDevide(unit, power);
+    return this;
+  }
+
+  private void doDevide(Unit unit, int power) {
+    factor /= Math.pow(unit.getFactor(), power);
+    for (SIBaseUnit baseUnit : SIBaseUnit.values()) {
+      powers[baseUnit.ordinal()] -= unit.getPower(baseUnit) * power;
+    }
   }
 
   public Unit createUnit() {

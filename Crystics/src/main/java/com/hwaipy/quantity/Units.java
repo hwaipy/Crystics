@@ -15,7 +15,6 @@ public class Units {
   public static final HashMap<String, Unit> unitMap = new HashMap();
 
   public static void register(Unit unit) {
-    System.out.println(unit);
     synchronized (UnitPrefix.class) {
       String name = unit.getToken();
       if (unitMap.containsKey(name)) {
@@ -27,12 +26,12 @@ public class Units {
 
   //SI Base Units
   public static final Unit m = new UnitBuilder("m", true, 1, 1, 0, 0, 0, 0, 0, 0).register().createUnit();
-  public static final Unit g = new UnitBuilder("m", true, 1e-3, 0, 1, 0, 0, 0, 0, 0).register().createUnit();
-  public static final Unit s = new UnitBuilder("m", true, 1, 0, 0, 1, 0, 0, 0, 0).register().createUnit();
-  public static final Unit A = new UnitBuilder("m", true, 1, 0, 0, 0, 1, 0, 0, 0).register().createUnit();
-  public static final Unit K = new UnitBuilder("m", true, 1, 0, 0, 0, 0, 1, 0, 0).register().createUnit();
-  public static final Unit mol = new UnitBuilder("m", true, 1, 0, 0, 0, 0, 0, 1, 0).register().createUnit();
-  public static final Unit cd = new UnitBuilder("m", true, 1, 0, 0, 0, 0, 0, 0, 1).register().createUnit();
+  public static final Unit g = new UnitBuilder("g", true, 1e-3, 0, 1, 0, 0, 0, 0, 0).register().createUnit();
+  public static final Unit s = new UnitBuilder("s", true, 1, 0, 0, 1, 0, 0, 0, 0).register().createUnit();
+  public static final Unit A = new UnitBuilder("A", true, 1, 0, 0, 0, 1, 0, 0, 0).register().createUnit();
+  public static final Unit K = new UnitBuilder("K", true, 1, 0, 0, 0, 0, 1, 0, 0).register().createUnit();
+  public static final Unit mol = new UnitBuilder("mol", true, 1, 0, 0, 0, 0, 0, 1, 0).register().createUnit();
+  public static final Unit cd = new UnitBuilder("cd", true, 1, 0, 0, 0, 0, 0, 0, 1).register().createUnit();
 
   //Units
   public static final Unit DIMENSIONLESS = new UnitBuilder("DIMENSIONLESS", false, 1, 0, 0, 0, 0, 0, 0, 0).register().createUnit();
