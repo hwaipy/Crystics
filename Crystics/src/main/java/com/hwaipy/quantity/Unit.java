@@ -186,4 +186,9 @@ public class Unit {
     return new UnitBuilder(this).devide(unit, power).createUnit();
   }
 
+  public static Unit of(String unitString) {
+    Quantity quantity = new QuantityParser(unitString).parse();
+    return new UnitBuilder(quantity.getUnit()).times(quantity.getValue()).createUnit();
+  }
+
 }

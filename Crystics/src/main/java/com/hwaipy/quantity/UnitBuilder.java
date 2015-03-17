@@ -74,6 +74,11 @@ public class UnitBuilder {
     return this;
   }
 
+  public UnitBuilder times(double factor) {
+    this.factor *= factor;
+    return this;
+  }
+
   private void doTimes(Unit unit, int power) {
     factor *= Math.pow(unit.getFactor(), power);
     for (SIBaseUnit baseUnit : SIBaseUnit.values()) {

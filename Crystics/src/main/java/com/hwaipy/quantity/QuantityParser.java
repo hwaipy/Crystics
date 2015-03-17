@@ -31,7 +31,7 @@ class QuantityParser {
     double factor = numberString.isEmpty() ? 1 : Double.parseDouble(numberString);
     String unitString = quantityString.substring(matcher.end());
     Unit unit = parseUnit(unitString);
-    return new Quantity(factor, unit);
+    return unit == null ? null : new Quantity(factor, unit);
   }
 
   public Unit parseUnit(String unitString) {
@@ -48,19 +48,21 @@ class QuantityParser {
       while (true) {
         boolean find = matcher.find();
         int cursor = find ? matcher.start() : unitString.length();
-        String subUnitString = unitString.substring(position, cursor);
+        if (cursor != 0) {
+          String subUnitString = unitString.substring(position, cursor);
+          String[] split = subUnitString.split("\\^");
+          if (split.length > 2) {
+            throw new UnitParseException("Invalid unit: " + subUnitString);
+          }
+          String subUnitToken = split[0];
+          int power = split.length == 2 ? Integer.parseInt(split[1]) : 1;
+          if (!up) {
+            power = -power;
+          }
+          Unit unit = parseUnitToken(subUnitToken);
+          unitBuilder.times(unit, power);
+        }
         String separator = find ? matcher.group(0) : null;
-        String[] split = subUnitString.split("\\^");
-        if (split.length > 2) {
-          throw new UnitParseException("Invalid unit: " + subUnitString);
-        }
-        String subUnitToken = split[0];
-        int power = split.length == 2 ? Integer.parseInt(split[1]) : 1;
-        if (!up) {
-          power = -power;
-        }
-        Unit unit = parseUnitToken(subUnitToken);
-        unitBuilder.times(unit, power);
         up = find ? AVAILABLE_UNIT_SEPARATOR_TIMES.contains(separator) : true;
         position = cursor + 1;
         if (!find) {

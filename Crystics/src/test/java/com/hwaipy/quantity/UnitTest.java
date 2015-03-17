@@ -5,8 +5,12 @@
  */
 package com.hwaipy.quantity;
 
+import static com.hwaipy.quantity.UnitPrefixes.*;
+import static com.hwaipy.quantity.Units.*;
 import java.util.LinkedList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -129,6 +133,26 @@ public class UnitTest {
     assertEquals(new UnitBuilder(null, false, 1, 2, 1, -4, -1, 0, 0, 0).createUnit(), Units.Hz.times(Units.V));
     assertEquals(new UnitBuilder(null, false, 1. / 60, 2, 1, -4, -1, 0, 0, 0).createUnit(), Units.V.devide(Units.min));
     assertEquals(new UnitBuilder(null, false, 1. / 3600, 2, 1, -5, -1, 0, 0, 0).createUnit(), Units.V.devide(Units.min, 2));
+  }
+
+  @Test
+  public void testParser() {
+    LinkedList<Pair<Unit, Unit>> unitPairs = new LinkedList<Pair<Unit, Unit>>();
+    unitPairs.add(ImmutablePair.of(d, Unit.of("86400s")));
+    unitPairs.add(ImmutablePair.of(eV, Unit.of("1.602176565e-19m^2*kg/s^2")));
+    unitPairs.add(ImmutablePair.of(eV, Unit.of(".000001MeV")));
+    unitPairs.add(ImmutablePair.of(mmHg, Unit.of("133.3224kg/m/s/s")));
+    unitPairs.add(ImmutablePair.of(mmHg, Unit.of("133.3224*kg/m/s/s")));
+    unitPairs.add(ImmutablePair.of(mmHg, Unit.of("133.3224/m*kg/s/s")));
+    unitPairs.add(ImmutablePair.of(mmHg, Unit.of("133.3224/m*kg/s/s")));
+    unitPairs.add(ImmutablePair.of(T, Unit.of("kg/s/s/A")));
+    unitPairs.add(ImmutablePair.of(T, Unit.of("T")));
+    unitPairs.add(ImmutablePair.of(T.prefix(micro), Unit.of("µT")));
+    for (Pair<Unit, Unit> unitPair : unitPairs) {
+      assertTrue(unitPair.getLeft().equalsDimension(unitPair.getRight()));
+      assertEquals(unitPair.getLeft().getFactor(), unitPair.getRight().getFactor(), 0.0);
+    }
+
   }
 
 }
