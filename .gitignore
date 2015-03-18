@@ -1,9 +1,6 @@
-# Generated
-target/*
-javadoc/
-bin/
-log/
-
-# Misc.
-.DS_Store
-*.bak
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
