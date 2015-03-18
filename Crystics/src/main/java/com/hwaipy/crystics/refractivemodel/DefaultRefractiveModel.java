@@ -11,15 +11,21 @@ import com.hwaipy.references.Reference;
  *
  * @author Hwaipy
  */
-public class SellmeierRefractiveModel implements RefractiveModel {
+public class DefaultRefractiveModel implements RefractiveModel {
 
   private final Range range;
-
   private final Reference reference;
+  private final RefractiveEquation reX;
+  private final RefractiveEquation reY;
+  private final RefractiveEquation reZ;
 
-  public SellmeierRefractiveModel(Range range, Reference reference) {
+  public DefaultRefractiveModel(Range range, Reference reference,
+          RefractiveEquation reX, RefractiveEquation reY, RefractiveEquation reZ) {
     this.range = range;
     this.reference = reference;
+    this.reX = reX;
+    this.reY = reY;
+    this.reZ = reZ;
   }
 
   @Override

@@ -6,8 +6,9 @@
 package com.hwaipy.crystics.input;
 
 import com.hwaipy.crystics.refractivemodel.Range;
+import com.hwaipy.crystics.refractivemodel.RefractiveEquation;
 import com.hwaipy.crystics.refractivemodel.RefractiveModel;
-import com.hwaipy.crystics.refractivemodel.SellmeierRefractiveModel;
+import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
 import com.hwaipy.references.DOI;
 import com.hwaipy.references.DOIReference;
 import com.hwaipy.references.Reference;
@@ -69,17 +70,19 @@ public class SellmeierXMLLoader {
 
   private static void parse(Document document) {
     Element rootElement = document.getRootElement();
-    parse(rootElement);
+    Object object = parse(rootElement);
   }
 
-  private static void parse(Element rootElement) {
+  private static Object parse(Element rootElement) {
     List<Element> mediumElements = rootElement.elements();
     for (Element mediumElement : mediumElements) {
-      parseMediumElement(mediumElement);
+      Object medium = parseMediumElement(mediumElement);
     }
+
+    return null;
   }
 
-  private static void parseMediumElement(Element mediumElement) {
+  private static Object parseMediumElement(Element mediumElement) {
     String symbol = mediumElement.elementText("symbol");
     String name = mediumElement.elementText("name");
     List<Element> aliasElements = mediumElement.elements("alias");
@@ -90,16 +93,13 @@ public class SellmeierXMLLoader {
     List<Element> refractiveElements = mediumElement.elements("refractive");
     ArrayList<RefractiveModel> refractiveModels = new ArrayList<RefractiveModel>();
     for (Element refractiveElement : refractiveElements) {
-      SellmeierRefractiveModel refractiveModel = parseRefractiveElement(refractiveElement);
+      DefaultRefractiveModel refractiveModel = parseRefractiveElement(refractiveElement);
     }
-//        refractive+)
-    System.out.println("Medium");
-    System.out.println("Symbol: " + symbol);
-    System.out.println("Name: " + name);
-    System.out.println("Alias: " + aliasList);
+
+    return null;
   }
 
-  private static SellmeierRefractiveModel parseRefractiveElement(Element refractiveElement) {
+  private static DefaultRefractiveModel parseRefractiveElement(Element refractiveElement) {
     Element rangeElement = refractiveElement.element("range");
     double rangeFrom = Double.parseDouble(rangeElement.elementText("from"));
     double rangeTo = Double.parseDouble(rangeElement.elementText("to"));
@@ -118,14 +118,31 @@ public class SellmeierXMLLoader {
     //<!ELEMENT external (#PCDATA)>
 //
     Element nXelement = refractiveElement.element("nx");
+    RefractiveEquation refractiveEquationX;
+    RefractiveEquation refractiveEquationY;
+    RefractiveEquation refractiveEquationZ;
     if (nXelement != null) {
-
+      Element nYelement = refractiveElement.element("ny");
+      Element nZelement = refractiveElement.element("nz");
+      refractiveEquationX = parseRefractiveEquation(nXelement);
+      refractiveEquationY = parseRefractiveEquation(nYelement);
+      refractiveEquationZ = parseRefractiveEquation(nZelement);
     }
     else {
+      Element nOelement = refractiveElement.element("no");
+      Element nEelement = refractiveElement.element("ne");
+      refractiveEquationX = parseRefractiveEquation(nEelement);
+      refractiveEquationY = refractiveEquationX;
+      refractiveEquationZ = parseRefractiveEquation(nOelement);
     }
     Element referenceElement = refractiveElement.element("reference");
     Reference reference = parseReference(referenceElement);
-    return new SellmeierRefractiveModel(range, reference);
+    return new DefaultRefractiveModel(range, reference,
+            refractiveEquationX, refractiveEquationY, refractiveEquationZ);
+  }
+
+  private static RefractiveEquation parseRefractiveEquation(Element nXelement) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   private static Reference parseReference(Element referencElement) {

@@ -5,22 +5,14 @@
  */
 package com.hwaipy.crystics.refractivemodel;
 
+import com.hwaipy.quantity.Quantity;
+
 /**
  *
  * @author Hwaipy
  */
-public class RefractiveEquation {
+public interface RefractiveEquation {
 
-  private static double µm;
-  static double λ = 1;
-
-  public static void main(String[] args) {
-    System.out.println(RefractiveEquation.µm);
-    double µm = 0;
-    double Ω = 1;
-    double λ = 1;
-    RefractiveEquation.λ = 100;
-    System.out.println(Ω);
-  }
+  public Quantity getRefractive(Quantity waveLength);
 
 }
