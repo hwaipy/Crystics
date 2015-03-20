@@ -5,10 +5,13 @@
  */
 package com.hwaipy.crystics.input;
 
+import com.hwaipy.crystics.Medium;
+import com.hwaipy.crystics.Mediums;
 import com.hwaipy.crystics.refractivemodel.Range;
 import com.hwaipy.crystics.refractivemodel.RefractiveEquation;
 import com.hwaipy.crystics.refractivemodel.RefractiveModel;
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
+import com.hwaipy.crystics.refractivemodel.SellmeierRefractiveEquation;
 import com.hwaipy.references.DOI;
 import com.hwaipy.references.DOIReference;
 import com.hwaipy.references.Reference;
@@ -17,6 +20,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -58,7 +63,10 @@ public class SellmeierXMLLoader {
         LoggerFactory.getLogger(SellmeierXMLLoader.class).warn("Input XML data type not valid: " + errorHandler.getErrors().asXML(), errorHandler.getErrors());
         return;
       }
-      parse(document);
+      Collection<Medium> mediums = parse(document);
+      for (Medium medium : mediums) {
+        Mediums.register(medium);
+      }
     } catch (UnsupportedEncodingException ex) {
       LoggerFactory.getLogger(SellmeierXMLLoader.class).warn("Encoding UTF-8 is not supported.", ex);
     } catch (DocumentException ex) {
@@ -68,21 +76,24 @@ public class SellmeierXMLLoader {
     }
   }
 
-  private static void parse(Document document) {
+  private static Collection<Medium> parse(Document document) {
     Element rootElement = document.getRootElement();
-    Object object = parse(rootElement);
+    Collection<Medium> mediums = parse(rootElement);
+    return mediums;
   }
 
-  private static Object parse(Element rootElement) {
+  private static Collection<Medium> parse(Element rootElement) {
+    LinkedList<Medium> mediumList = new LinkedList<Medium>();
     List<Element> mediumElements = rootElement.elements();
     for (Element mediumElement : mediumElements) {
-      Object medium = parseMediumElement(mediumElement);
+      Collection<Medium> mediums = parseMediumElement(mediumElement);
+      mediumList.addAll(mediums);
     }
-
-    return null;
+    return mediumList;
   }
 
-  private static Object parseMediumElement(Element mediumElement) {
+  private static Collection<Medium> parseMediumElement(Element mediumElement) {
+    LinkedList<Medium> mediumList = new LinkedList<Medium>();
     String symbol = mediumElement.elementText("symbol");
     String name = mediumElement.elementText("name");
     List<Element> aliasElements = mediumElement.elements("alias");
@@ -94,9 +105,10 @@ public class SellmeierXMLLoader {
     ArrayList<RefractiveModel> refractiveModels = new ArrayList<RefractiveModel>();
     for (Element refractiveElement : refractiveElements) {
       DefaultRefractiveModel refractiveModel = parseRefractiveElement(refractiveElement);
+      Medium medium = new Medium(symbol, name, aliasList, refractiveModel);
+      mediumList.add(medium);
     }
-
-    return null;
+    return mediumList;
   }
 
   private static DefaultRefractiveModel parseRefractiveElement(Element refractiveElement) {
@@ -104,19 +116,6 @@ public class SellmeierXMLLoader {
     double rangeFrom = Double.parseDouble(rangeElement.elementText("from"));
     double rangeTo = Double.parseDouble(rangeElement.elementText("to"));
     Range range = new Range(rangeFrom, rangeTo);
-    //    <!ELEMENT refractive (((nx,ny,nz)|(ne,no)))>
-    //<!ELEMENT nx (refractive-model)>
-    //<!ELEMENT ny (refractive-model)>
-    //<!ELEMENT nz (refractive-model)>
-    //<!ELEMENT ne (refractive-model)>
-    //<!ELEMENT no (refractive-model)>
-    //<!ELEMENT refractive-model ((system|external))>
-    //<!ELEMENT system (sellmeier)>
-    //<!ELEMENT sellmeier (formula,coefficients)>
-    //<!ELEMENT formula (#PCDATA)>
-    //<!ELEMENT coefficients (#PCDATA)>
-    //<!ELEMENT external (#PCDATA)>
-//
     Element nXelement = refractiveElement.element("nx");
     RefractiveEquation refractiveEquationX;
     RefractiveEquation refractiveEquationY;
@@ -141,8 +140,22 @@ public class SellmeierXMLLoader {
             refractiveEquationX, refractiveEquationY, refractiveEquationZ);
   }
 
-  private static RefractiveEquation parseRefractiveEquation(Element nXelement) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  private static RefractiveEquation parseRefractiveEquation(Element nElement) {
+    Element refractiveModelElement = nElement.element("refractive-model");
+    Element systemElement = refractiveModelElement.element("system");
+    if (systemElement == null) {
+      LoggerFactory.getLogger(SellmeierXMLLoader.class).warn("External refractive model is not supported yet.");
+      throw new UnsupportedOperationException("External refractive model is not supported yet.");
+    }
+    Element sellmeierElement = systemElement.element("sellmeier");
+    String formula = sellmeierElement.elementText("formula");
+    String coefficientsString = sellmeierElement.elementText("coefficients");
+    String[] split = coefficientsString.split(",");
+    double[] coefficients = new double[split.length];
+    for (int i = 0; i < split.length; i++) {
+      coefficients[i] = Double.parseDouble(split[i]);
+    }
+    return SellmeierRefractiveEquation.newInstance(formula, coefficients);
   }
 
   private static Reference parseReference(Element referencElement) {
@@ -159,9 +172,4 @@ public class SellmeierXMLLoader {
   }
 
   private static EntityResolver entityResolver;
-
-  public static void main(String[] args) throws Exception {
-    load(SellmeierXMLLoader.class.getResourceAsStream("/com/hwaipy/crystics/Mediums.xml"));
-  }
-
 }

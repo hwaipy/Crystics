@@ -5,6 +5,8 @@
  */
 package com.hwaipy.references;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+
 /**
  *
  * @author Hwaipy
