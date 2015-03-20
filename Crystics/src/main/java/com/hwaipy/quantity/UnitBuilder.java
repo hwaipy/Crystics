@@ -86,17 +86,17 @@ public class UnitBuilder {
     }
   }
 
-  public UnitBuilder devide(Unit unit) {
-    doDevide(unit, 1);
+  public UnitBuilder divide(Unit unit) {
+    doDivide(unit, 1);
     return this;
   }
 
-  public UnitBuilder devide(Unit unit, int power) {
-    doDevide(unit, power);
+  public UnitBuilder divide(Unit unit, int power) {
+    doDivide(unit, power);
     return this;
   }
 
-  private void doDevide(Unit unit, int power) {
+  private void doDivide(Unit unit, int power) {
     factor /= Math.pow(unit.getFactor(), power);
     for (SIBaseUnit baseUnit : SIBaseUnit.values()) {
       powers[baseUnit.ordinal()] -= unit.getPower(baseUnit) * power;

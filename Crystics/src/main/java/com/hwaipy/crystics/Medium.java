@@ -6,10 +6,11 @@
 package com.hwaipy.crystics;
 
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
+import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.apache.commons.lang3.builder.EqualsBuilder;
 
 /**
  *
@@ -41,18 +42,8 @@ public class Medium {
     return Collections.unmodifiableCollection(aliasList);
   }
 
-//  @Override
-//  public boolean equals(Object obj) {
-//    if (this == obj) {
-//      return true;
-//    }
-//    if (obj == null || this.getClass() != obj.getClass()) {
-//      return false;
-//    }
-//    Medium medium = (Medium) obj;
-//    return new EqualsBuilder().append(this.symbol, medium.getSymbol())
-//            .append(this.name, medium.getName())
-//            .append(this.factor, unit.factor)
-//            .append(this.powers, unit.powers).isEquals();
+//  public double getRefractive(MonochromaticWave monochromaticWave) {
+//    double lambda = monochromaticWave.getWaveLength().getValue(Unit.of("µm"));
 //  }
+
 }

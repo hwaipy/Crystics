@@ -42,6 +42,10 @@ public class Quantity {
     }
   }
 
+  public double getValue(String unit) {
+    return getValue(Unit.of(unit));
+  }
+
   public Quantity add(Quantity quantity) {
     if (unit.equalsDimension(quantity.getUnit())) {
       double value2 = quantity.getValueInSI();
@@ -62,16 +66,28 @@ public class Quantity {
     }
   }
 
+  public Quantity times(double d) {
+    return new Quantity(value * d, unit);
+  }
+
   public Quantity times(Quantity quantity) {
     return new Quantity(value * quantity.getValue(), unit.times(quantity.getUnit()));
   }
 
-  public Quantity devide(Quantity quantity) {
-    return new Quantity(value / quantity.getValue(), unit.devide(quantity.getUnit()));
+  public Quantity divide(double d) {
+    return new Quantity(value / d, unit);
+  }
+
+  public Quantity divide(Quantity quantity) {
+    return new Quantity(value / quantity.getValue(), unit.divide(quantity.getUnit()));
   }
 
   public Quantity power(int power) {
     return new Quantity(Math.pow(value, power), Units.DIMENSIONLESS.times(unit, power));
+  }
+
+  public void assertDimention(String dimention) {
+    unit.assertDimension(dimention);
   }
 
   public static Quantity of(String quantityString) {

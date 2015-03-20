@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 class QuantityParser {
 
   private static final String AVAILABLE_UNIT_SEPARATOR_TIMES = "⋅*";
-  private static final String AVAILABLE_UNIT_SEPARATOR_DEVIDE = "/";
+  private static final String AVAILABLE_UNIT_SEPARATOR_DIVIDE = "/";
   private final String quantityString;
 
   public QuantityParser(String quantityString) {
@@ -41,7 +41,7 @@ class QuantityParser {
     }
     try {
       Pattern separatorPattern = Pattern.compile("(["
-              + AVAILABLE_UNIT_SEPARATOR_TIMES + AVAILABLE_UNIT_SEPARATOR_DEVIDE + "])");
+              + AVAILABLE_UNIT_SEPARATOR_TIMES + AVAILABLE_UNIT_SEPARATOR_DIVIDE + "])");
       Matcher matcher = separatorPattern.matcher(unitString);
       int position = 0;
       boolean up = true;

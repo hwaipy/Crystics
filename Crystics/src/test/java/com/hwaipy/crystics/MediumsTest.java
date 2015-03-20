@@ -17,26 +17,26 @@ import static org.junit.Assert.*;
  * @author Hwaipy
  */
 public class MediumsTest {
-
+  
   public MediumsTest() {
   }
-
+  
   @BeforeClass
   public static void setUpClass() {
   }
-
+  
   @AfterClass
   public static void tearDownClass() {
   }
-
+  
   @Before
   public void setUp() {
   }
-
+  
   @After
   public void tearDown() {
   }
-
+  
   @Test
   public void testInitialRegistered() {
     Medium m1 = Mediums.getMediumBySymbol("KTiOPO4");
@@ -48,10 +48,11 @@ public class MediumsTest {
     assertEquals("potassium titanyl phosphate", m1.getName());
     assertEquals("KTP", m1.getAlias().iterator().next());
   }
-
+  
   @Test
   public void testRefractives() {
     Medium KTP = Mediums.getMediumBySymbol("KTiOPO4");
+//    assertEquals(1.7680, KTP.);
   }
-
+  
 }

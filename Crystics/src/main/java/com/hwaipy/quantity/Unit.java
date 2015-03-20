@@ -76,6 +76,12 @@ public class Unit {
     }
   }
 
+  public void assertDimension(String dimension) {
+    if (!equalsDimension(of(dimension))) {
+      throw new UnitDimensionMissmatchException("Assertion failed. Expected [" + dimension + "], get [" + toDimensionString() + "]");
+    }
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -178,12 +184,12 @@ public class Unit {
     return new UnitBuilder(this).times(unit, power).createUnit();
   }
 
-  public Unit devide(Unit unit) {
-    return new UnitBuilder(this).devide(unit).createUnit();
+  public Unit divide(Unit unit) {
+    return new UnitBuilder(this).divide(unit).createUnit();
   }
 
-  public Unit devide(Unit unit, int power) {
-    return new UnitBuilder(this).devide(unit, power).createUnit();
+  public Unit divide(Unit unit, int power) {
+    return new UnitBuilder(this).divide(unit, power).createUnit();
   }
 
   public static Unit of(String unitString) {

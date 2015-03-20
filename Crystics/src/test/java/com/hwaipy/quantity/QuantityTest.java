@@ -14,9 +14,6 @@ import static org.junit.Assert.*;
 import static com.hwaipy.quantity.Units.*;
 import static com.hwaipy.quantity.UnitPrefixes.*;
 import java.util.Collection;
-import java.util.LinkedList;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -64,8 +61,18 @@ public class QuantityTest {
       assertTrue(unit.equalsDimension(parsedQuantity.getUnit()));
       assertEquals(unit.getFactor(), parsedQuantity.getValueInSI(), 0.0);
     }
-    assertEquals(new Quantity(3e8, m.devide(s)), Quantity.of("3e8m/s"));
+    assertEquals(new Quantity(3e8, m.divide(s)), Quantity.of("3e8m/s"));
     assertEquals(new Quantity(16.7e-12, m.times(A)), Quantity.of("16.7E0mm*nA"));
+  }
+
+  @Test
+  public void testAssertDimention() {
+    Constants.c.assertDimention("m/s");
+  }
+
+  @Test(expected = UnitDimensionMissmatchException.class)
+  public void testAssertDimentionException() {
+    Constants.c.assertDimention("m");
   }
 
 }
