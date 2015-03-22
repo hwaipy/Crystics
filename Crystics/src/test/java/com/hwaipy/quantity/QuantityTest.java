@@ -63,6 +63,8 @@ public class QuantityTest {
     }
     assertEquals(new Quantity(3e8, m.divide(s)), Quantity.of("3e8m/s"));
     assertEquals(new Quantity(16.7e-12, m.times(A)), Quantity.of("16.7E0mm*nA"));
+    assertEquals(new Quantity(1, Units.DIMENSIONLESS), Quantity.of("1"));
+    assertEquals(new Quantity(1, Units.DIMENSIONLESS), Quantity.of(""));
   }
 
   @Test

@@ -6,6 +6,7 @@
 package com.hwaipy.crystics.refractivemodel;
 
 import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Units;
 import java.util.HashMap;
 
 /**
@@ -88,6 +89,11 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public Quantity getGroupRefractive(Quantity waveLength) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
   }
 
   private static class SellmeierRefractiveEquationFormula4 extends SellmeierRefractiveEquation {
@@ -101,8 +107,22 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
 
     @Override
     public Quantity getRefractive(Quantity waveLength) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      double λ = waveLength.getValue("µm");
+      double λ2 = λ * λ;
+      double[] c = coefficients;
+      double n = Math.sqrt(c[0] + c[1] / (λ2 - c[3]) + c[5] / (λ2 - c[7]));
+      return new Quantity(n, Units.DIMENSIONLESS);
     }
 
+    @Override
+    public Quantity getGroupRefractive(Quantity waveLength) {
+      double λ = waveLength.getValue("µm");
+      double λ2 = λ * λ;
+      double[] c = coefficients;
+      double n = getRefractive(waveLength).getValue("");
+      double dndlamda = -λ / n * (c[1] / (Math.pow(λ2 - c[3], 2)) + c[5] / (Math.pow(λ2 - c[7], 2)));
+      double result = 1 / ((1 + λ / n * dndlamda) / n);
+      return new Quantity(result, Units.DIMENSIONLESS);
+    }
   }
 }

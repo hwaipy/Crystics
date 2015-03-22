@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.hwaipy.quantity;
+package com.hwaipy.crystics;
 
 /**
+ *
  * @author Hwaipy 2015-3-21
  */
-public class Constants {
+public enum Axis {
 
-  public final static Quantity I = Quantity.of("1");
-  public final static Quantity c = Quantity.of("299792458m/s");
+  X, Y, Z, O, E
 }

@@ -15,4 +15,6 @@ public interface RefractiveEquation {
 
   public Quantity getRefractive(Quantity waveLength);
 
+  public Quantity getGroupRefractive(Quantity waveLength);
+
 }

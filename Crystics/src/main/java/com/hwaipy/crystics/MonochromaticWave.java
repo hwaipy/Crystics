@@ -22,6 +22,10 @@ public class MonochromaticWave {
     this.angularFrequency = angularFrequency;
   }
 
+  public Quantity λ() {
+    return getWaveLength();
+  }
+
   public Quantity getWaveLength() {
     return c.times(2 * Math.PI).divide(angularFrequency);
   }
@@ -29,6 +33,10 @@ public class MonochromaticWave {
   public void setWaveLength(Quantity wavelength) {
     wavelength.assertDimention("m");
     angularFrequency = c.times(2 * Math.PI).divide(wavelength);
+  }
+
+  public Quantity ν() {
+    return getFrequency();
   }
 
   public Quantity getFrequency() {
@@ -40,6 +48,10 @@ public class MonochromaticWave {
     angularFrequency = frequancy.times(2 * Math.PI);
   }
 
+  public Quantity ω() {
+    return getAngularFrequency();
+  }
+
   public Quantity getAngularFrequency() {
     return angularFrequency;
   }
@@ -48,20 +60,48 @@ public class MonochromaticWave {
     this.angularFrequency = angularFrequency;
   }
 
-//  public Amount<WaveNumber> getWaveNumber(Medium medium, Axis axis) {
-//    double n = medium.getIndex(this, axis);
-//    return (Amount<WaveNumber>) Amount.ONE.times(2 * Math.PI * n).divide(getWaveLength());
-//  }
+  public Quantity k(Medium medium, Axis axis) {
+    return getWaveNumber(medium, axis);
+  }
+
+  public Quantity getWaveNumber(Medium medium, Axis axis) {
+    return medium.getWaveNumber(this, axis);
+  }
+
+  public static MonochromaticWave λ(String wavelength) {
+    return byWaveLength(Quantity.of(wavelength));
+  }
+
+  public static MonochromaticWave λ(Quantity wavelength) {
+    return byWaveLength(wavelength);
+  }
+
   public static MonochromaticWave byWaveLength(Quantity wavelength) {
     MonochromaticWave monochromaticWave = new MonochromaticWave();
     monochromaticWave.setWaveLength(wavelength);
     return monochromaticWave;
   }
 
+  public static MonochromaticWave ν(String frequancy) {
+    return byFrequency(Quantity.of(frequancy));
+  }
+
+  public static MonochromaticWave ν(Quantity frequency) {
+    return byFrequency(frequency);
+  }
+
   public static MonochromaticWave byFrequency(Quantity frequency) {
     MonochromaticWave monochromaticWave = new MonochromaticWave();
     monochromaticWave.setFrequency(frequency);
     return monochromaticWave;
+  }
+
+  public static MonochromaticWave ω(String angularFrequency) {
+    return byAngularFrequency(Quantity.of(null));
+  }
+
+  public static MonochromaticWave ω(Quantity angularFrequency) {
+    return byAngularFrequency(angularFrequency);
   }
 
   public static MonochromaticWave byAngularFrequency(Quantity angularFrequency) {

@@ -5,9 +5,9 @@
  */
 package com.hwaipy.crystics;
 
+import static com.hwaipy.crystics.MonochromaticWave.λ;
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
 import com.hwaipy.quantity.Quantity;
-import com.hwaipy.quantity.Unit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -42,8 +42,55 @@ public class Medium {
     return Collections.unmodifiableCollection(aliasList);
   }
 
-//  public double getRefractive(MonochromaticWave monochromaticWave) {
-//    double lambda = monochromaticWave.getWaveLength().getValue(Unit.of("µm"));
-//  }
+  public Quantity n(MonochromaticWave monochromaticWave, Axis axis) {
+    return getRefractive(monochromaticWave, axis);
+  }
+
+  public Quantity getRefractive(MonochromaticWave monochromaticWave, Axis axis) {
+    Quantity lambda = monochromaticWave.getWaveLength();
+    return refractiveModel.getRefractive(lambda, axis);
+  }
+
+  public Quantity N(MonochromaticWave monochromaticWave, Axis axis) {
+    return getGroupRefractive(monochromaticWave, axis);
+  }
+
+  public Quantity getGroupRefractive(MonochromaticWave monochromaticWave, Axis axis) {
+    Quantity lambda = monochromaticWave.getWaveLength();
+    return refractiveModel.getGroupRefractive(lambda, axis);
+  }
+
+  public Quantity getWaveNumber(MonochromaticWave monochromaticWave, Axis axis) {
+    Quantity n = getRefractive(monochromaticWave, axis);
+    return n.times(2 * Math.PI).divide(monochromaticWave.getWaveLength());
+  }
+
+  public Quantity getAbbeNumverVD(Axis axis) {
+    return AbbeNumber.VD(this, axis);
+  }
+
+  public Quantity getAbbeNumverVd(Axis axis) {
+    return AbbeNumber.Vd(this, axis);
+  }
+
+  public Quantity getAbbeNumverVe(Axis axis) {
+    return AbbeNumber.Ve(this, axis);
+  }
+
+  public static void main(String[] args) {
+    MonochromaticWave λ1 = λ("1550nm");
+    MonochromaticWave λ2 = λ("1551nm");
+    System.out.println(λ1.ω());
+    System.out.println(λ2.ω());
+    System.out.println(λ2.ω().minus(λ1.ω()));
+//    Quantity ω1 = Quantity.of("2.414937906806222E15s^-1");
+//    Quantity dω = Quantity.of("0.00000001E15s^-1");
+//    Quantity ω2 = ω1.add(dω);
+//    Quantity ω3 = ω2.add(dω);
+//    MonochromaticWave w1 = ω(ω1);
+//    MonochromaticWave w2 = ω(ω2);
+//    MonochromaticWave w3 = ω(ω3);
+//w1.k
+  }
 
 }
