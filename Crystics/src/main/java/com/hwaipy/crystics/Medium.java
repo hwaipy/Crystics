@@ -7,6 +7,7 @@ package com.hwaipy.crystics;
 
 import static com.hwaipy.crystics.MonochromaticWave.λ;
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
+import com.hwaipy.quantity.Constants;
 import com.hwaipy.quantity.Quantity;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +49,7 @@ public class Medium {
 
   public Quantity getRefractive(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity lambda = monochromaticWave.getWaveLength();
-    return refractiveModel.getRefractive(lambda, axis);
+    return refractiveModel.getRefractive(lambda, 0, axis);
   }
 
   public Quantity N(MonochromaticWave monochromaticWave, Axis axis) {
@@ -57,7 +58,19 @@ public class Medium {
 
   public Quantity getGroupRefractive(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity lambda = monochromaticWave.getWaveLength();
-    return refractiveModel.getGroupRefractive(lambda, axis);
+    Quantity n = refractiveModel.getRefractive(lambda, 0, axis);
+    Quantity dndl = refractiveModel.getRefractive(lambda, 1, axis);
+    return n.minus(dndl.times(lambda));
+  }
+
+  public Quantity getGVD(MonochromaticWave monochromaticWave, Axis axis) {
+    Quantity lambda = monochromaticWave.getWaveLength();
+    Quantity n = refractiveModel.getRefractive(lambda, 0, axis);
+    Quantity dndl = refractiveModel.getRefractive(lambda, 1, axis);
+    Quantity d2ndl2 = refractiveModel.getRefractive(lambda, 2, axis);
+    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(Constants.c.power(2));
+    System.out.println(gvd.getValue("fs^2/mm"));
+    return n.minus(dndl.times(lambda));
   }
 
   public Quantity getWaveNumber(MonochromaticWave monochromaticWave, Axis axis) {
@@ -78,19 +91,8 @@ public class Medium {
   }
 
   public static void main(String[] args) {
-    MonochromaticWave λ1 = λ("1550nm");
-    MonochromaticWave λ2 = λ("1551nm");
-    System.out.println(λ1.ω());
-    System.out.println(λ2.ω());
-    System.out.println(λ2.ω().minus(λ1.ω()));
-//    Quantity ω1 = Quantity.of("2.414937906806222E15s^-1");
-//    Quantity dω = Quantity.of("0.00000001E15s^-1");
-//    Quantity ω2 = ω1.add(dω);
-//    Quantity ω3 = ω2.add(dω);
-//    MonochromaticWave w1 = ω(ω1);
-//    MonochromaticWave w2 = ω(ω2);
-//    MonochromaticWave w3 = ω(ω3);
-//w1.k
+    Medium KTP = Mediums.getMediumByAlias("KTP");
+    KTP.getGVD(λ("780nm"), Axis.X);
   }
 
 }

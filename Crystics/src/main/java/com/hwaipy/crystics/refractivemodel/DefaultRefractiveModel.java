@@ -40,12 +40,8 @@ public class DefaultRefractiveModel implements RefractiveModel {
     return range;
   }
 
-  public Quantity getRefractive(Quantity lambda, Axis axis) {
-    return getRefractiveEquation(axis).getRefractive(lambda);
-  }
-
-  public Quantity getGroupRefractive(Quantity lambda, Axis axis) {
-    return getRefractiveEquation(axis).getGroupRefractive(lambda);
+  public Quantity getRefractive(Quantity lambda, int derivative, Axis axis) {
+    return getRefractiveEquation(axis).getRefractive(lambda, derivative);
   }
 
   private RefractiveEquation getRefractiveEquation(Axis axis) {

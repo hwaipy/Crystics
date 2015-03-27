@@ -13,8 +13,8 @@ import com.hwaipy.quantity.Quantity;
  */
 public interface RefractiveEquation {
 
-  public Quantity getRefractive(Quantity waveLength);
+  public Quantity getRefractive(Quantity waveLength, int derivative);
 
-  public Quantity getGroupRefractive(Quantity waveLength);
+  public int getDerivativeDepth();
 
 }

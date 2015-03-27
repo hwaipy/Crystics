@@ -38,7 +38,7 @@ public class Quantity {
       return this.value * this.unit.getFactor() / unit.getFactor();
     }
     else {
-      throw new UnitDimensionMissmatchException(this.unit.toDimensionString() + "can not convert to " + unit.toDimensionString());
+      throw new UnitDimensionMissmatchException(this.unit.toDimensionString() + " can not be converted to " + unit.toDimensionString());
     }
   }
 
