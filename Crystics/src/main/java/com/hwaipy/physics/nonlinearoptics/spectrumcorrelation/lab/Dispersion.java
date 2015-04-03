@@ -6,12 +6,8 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.lab;
 
 import com.hwaipy.physics.crystaloptics.Mediums;
-import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.BandPassFilter;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationPloter;
-import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.FabryPerotCaviry;
-import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.Filter;
-import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.GaussianFilter;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.HOMVisibilityCalculator;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.JointFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.PumpFunction;
@@ -32,41 +28,32 @@ public class Dispersion {
   private static double maxOmigaS = 1551.5;
   private static double minOmigaI = 1548.5;
   private static double maxOmigaI = 1551.5;
-  private static final Filter bandPass780_3 = new BandPassFilter(780, 3, 0);
-  private static final Filter bandPass780_1 = new BandPassFilter(780, 1, 0);
-  private static final Filter gaussian390_02 = new GaussianFilter(390, 0.2 / 2.35);
-  private static final Filter gaussian390_0015 = new GaussianFilter(390, 0.015 / 2.35);
-  private static final Filter gaussian780_0030 = new GaussianFilter(780, 0.030 / 2.35);
-  private static final Filter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
-  private static final Filter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
 
   public static void main(String[] args) throws IOException {
     CorrelationFunction functionPump = new PumpFunction(775, 0.36);
-//    functionPump.filterPump(gaussian390_02);
-//    functionPump.filterPump(fpEtalon390_0015);
-//    CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.KTiOPO4, 2, 7.9482);
     CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.KTiOPO4, 30, -45.04);
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
-//    functionJoin.filterIdle(fpEtalon780_0030);
-//    functionJoin.filterSignal(fpEtalon780_0030);
-//    plot(functionPump, "pump");
-//    plot(functionPhaseMatch, "phaseMatch");
-//    plot(functionJoin, "filtered");
-//    System.out.println(_HOM(functionJoin));
-//    for (int i = -0; i >= -500; i--) {
+    plot(functionJoin, "filtered");
+//    for (int i = 0; i <= 200; i++) {
+//    for (int i = 0; i >= -200; i--) {
+    for (int i = -200; i <= 200; i++) {
 //    System.out.println(HOM_traditional(functionJoin, 2e-12 * 5));
 //    double delta = 10 * Math.pow(0.96, i);
-    double delta = 2;
+      double delta = 0.01145;
 //      System.out.print(i + "\t" + (1.5 / 500 * i) + "\t");
-    minOmigaS = 1550 - delta;
-    maxOmigaS = 1550 + delta;
-    minOmigaI = 1550 - delta;
-    maxOmigaI = 1550 + delta;
-    plot(functionJoin, "filtered");
+      minOmigaS = 1550 - delta;
+      maxOmigaS = 1550 + delta;
+      minOmigaI = 1550 - delta;
+      maxOmigaI = 1550 + delta;
+//      plot(functionJoin, "filtered");
 //      System.out.println(_HOM(functionJoin));
 //    System.out.println(HOM_dispertion(functionJoin, 40e-12));
-    System.out.println(HOM_traditional(functionJoin, 5e-12));
-//    }
+//      System.out.println((0.1 * i) + "     " + HOM_dispertion2(functionJoin, 0.1 * i, 2800e-24));
+//      System.out.println((0.15 / 200 * i) + "\t" + HOM_dispertion3(functionJoin, 0.15 / 200 * i, 2800e-24));
+//      System.out.println((0.15 / 200 * i) + "\t" + HOM_traditional(functionJoin, 0.15 / 200 * i * 0.78 * 2800e-12));
+//    System.out.println(HOM_traditional(functionJoin, 5e-12));
+      System.out.println((0.15 / 200 * i) + "\t" + direct(0.15 / 200 * i * 0.78 * 2800));
+    }
   }
 
   private static void plot(CorrelationFunction function, String name) throws IOException {
@@ -99,6 +86,129 @@ public class Dispersion {
     double a = A.integrate(0.0001);
 //    System.out.println(delta + "\t" + (e / a));
     return e / a;
+  }
+
+  private static double HOM_dispertion2(CorrelationFunction function, double delta, double t02) throws IOException {
+    Integrator E = new DISPERSION2.EIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, delta, t02);
+    Integrator A = new DISPERSION2.AIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI);
+    double e = E.integrate(0.0001);
+    double a = A.integrate(0.0001);
+//    System.out.println(delta + "\t" + (e / a));
+    return e / a;
+  }
+
+  private static double HOM_dispertion3(CorrelationFunction function, double delta, double t02) throws IOException {
+    Integrator E = new DISPERSION3.EIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, delta, t02);
+    Integrator A = new DISPERSION3.AIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, delta);
+    double e = E.integrate(0.0001);
+    double a = A.integrate(0.0001);
+//    System.out.println(delta + "\t" + (e / a));
+    return e / a;
+  }
+
+  private static double direct(double deltaT) {
+    return 2 * (1 - Math.cos(50 * deltaT / 3000)) / Math.pow(deltaT * 50 / 3000, 2);
+  }
+
+  private static class DISPERSION3 {
+
+    private static class EIntegrator extends Integrator {
+
+      private final double delta;
+      private final double t02;
+
+      public EIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2, double delta, double t02) {
+        super(function, min1, max1, min2, max2);
+        this.delta = delta;
+        this.t02 = t02;
+      }
+
+      @Override
+      protected double function() {
+        double t3 = getNextRandom(min1, max1);
+        double t4 = getNextRandom(min1, max1);
+        double w2 = getNextRandom(min2, max2);
+        double w2p = getNextRandom(min2, max2);
+        double E2 = function.value((t4 + delta), w2) * function.value(t3, w2p) * function.value((t3 + delta), w2) * function.value(t4, w2p);
+        double E3 = 0.78e12 * (t3 - t4) * t02 * 0.78e12 * delta;
+//        double E = E2 * Math.cos(E3);
+        double E = Math.cos(E3);
+//        System.out.println("E: " + E);
+        return E;
+      }
+    }
+
+    private static class AIntegrator extends Integrator {
+
+      private final double deltaT;
+
+      public AIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2, double deltaT) {
+        super(function, min1, max1, min2, max2);
+        this.deltaT = deltaT;
+      }
+
+      @Override
+      protected double function() {
+        double t4 = getNextRandom(min1, max1);
+        double t3 = getNextRandom(min1, max1);
+        double w2 = getNextRandom(min2, max2);
+        double w2p = getNextRandom(min2, max2);
+        double result = function.value(t4 + deltaT, w2) * function.value(t3, w2p);
+//        System.out.println("A: " + result * result);
+        return result * result;
+      }
+
+    }
+  }
+
+  private static class DISPERSION2 {
+
+    private static class EIntegrator extends Integrator {
+
+      private final double delta;
+      private final double t02;
+
+      public EIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2, double delta, double t02) {
+        super(function, min1, max1, min2, max2);
+        this.delta = delta;
+        this.t02 = t02;
+      }
+
+      @Override
+      protected double function() {
+        double t3 = getNextRandom(min1, max1);
+        double t4 = getNextRandom(min1, max1);
+        double w2 = getNextRandom(min2, max2);
+        double w2p = getNextRandom(min2, max2);
+        double E1 = Math.pow(function.value(t4, w2) * function.value(t3, w2p), 2) - Math.pow(function.value((t4 + delta), w2) * function.value(t3, w2p), 2);
+        double E2 = function.value((t4 + delta), w2) * function.value(t3, w2p) * function.value((t3 + delta), w2) * function.value(t4, w2p);
+        double E3 = 0.78e12 * (t3 - t4) * t02 * 0.78e12 * delta;
+        double E = E1 + E2 * Math.cos(E3);
+        System.out.println(E1);
+        System.out.println(E2);
+        System.out.println("E" + E);
+        return E;
+      }
+    }
+
+    private static class AIntegrator extends Integrator {
+
+      public AIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2) {
+        super(function, min1, max1, min2, max2);
+      }
+
+      @Override
+      protected double function() {
+        double r1 = getNextRandom(min1, max1);
+        double r1p = getNextRandom(min1, max1);
+        double r2 = getNextRandom(min2, max2);
+        double r2p = getNextRandom(min2, max2);
+        double result = function.value(r1, r2) * function.value(r1p, r2p);
+        System.out.println("A" + (result * result));
+        return result * result;
+      }
+
+    }
   }
 
   private static class DISPERSION {

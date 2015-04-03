@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 public class PathsUtilities {
 
     private static final String KEY_PATH_DATA_STORAGY = "KeyPathDataStorage";
-    private static final String DEF_PATH_DATA_STORAGY = ".";
+    private static final String DEF_PATH_DATA_STORAGY = "./input-output/";
 
     /**
      *

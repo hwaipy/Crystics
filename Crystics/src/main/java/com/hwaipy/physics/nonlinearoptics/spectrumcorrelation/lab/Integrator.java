@@ -62,6 +62,7 @@ public abstract class Integrator {
     double r = function();
     resultSum += r;
     resultCount++;
+//    System.out.println(resultSum / resultCount);
     return resultSum / resultCount;
   }
 
