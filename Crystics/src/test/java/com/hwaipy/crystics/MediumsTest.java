@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static com.hwaipy.crystics.MonochromaticWave.λ;
-import static com.hwaipy.quantity.Constants.c;
+import static com.hwaipy.quantity.PhysicalConstants.c;
 import com.hwaipy.quantity.Quantity;
 import static org.junit.Assert.*;
 

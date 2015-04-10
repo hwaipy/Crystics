@@ -1,7 +1,7 @@
 package com.hwaipy.crystics;
 
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
-import com.hwaipy.quantity.Constants;
+import com.hwaipy.quantity.PhysicalConstants;
 import com.hwaipy.quantity.Quantity;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -60,7 +60,7 @@ public class Medium {
   public Quantity getGVD(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity lambda = monochromaticWave.getWaveLength();
     Quantity d2ndl2 = refractiveModel.getRefractive(lambda, 2, axis);
-    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(Constants.c.power(2));
+    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(PhysicalConstants.c.power(2));
     return gvd;
   }
 
