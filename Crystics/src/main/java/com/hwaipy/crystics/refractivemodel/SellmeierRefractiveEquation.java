@@ -4,6 +4,7 @@ import com.hwaipy.quantity.Quantity;
 import com.hwaipy.quantity.Unit;
 import com.hwaipy.quantity.Units;
 import java.util.HashMap;
+import org.apache.commons.math3.analysis.differentiation.DerivativeStructure;
 
 /**
  * @author Hwaipy 2015-3-18
@@ -23,7 +24,7 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     return derivativeDepth;
   }
 
-  private static final HashMap<String, SellmeierRefractiveEquationFactory> registeredEquations = new HashMap<String, SellmeierRefractiveEquationFactory>();
+  private static final HashMap<String, SellmeierRefractiveEquationFactory> registeredEquations = new HashMap<>();
 
   public static SellmeierRefractiveEquationFactory getFormulaFactory(String formulaID) {
     return registeredEquations.get(formulaID);
@@ -94,24 +95,22 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
 
     @Override
     public Quantity getRefractive(Quantity waveLength, int derivative) {
-      switch (derivative) {
-        case 0:
-          return n(waveLength);
-        case 1:
-          return dn_dlambda(waveLength);
-        case 2:
-          return d2n_dlambda2(waveLength);
-        default:
-          throw new UnsupportedOperationException("Dericative " + derivative + " not supported.");
+      double xRealValue = waveLength.getValue("µm");
+      int params = 1;
+      DerivativeStructure x = new DerivativeStructure(params, derivative, 0, xRealValue);
+      DerivativeStructure y = refractiveEquation(x);
+      if (derivative == 0) {
+        return new Quantity(y.getValue(), Units.DIMENSIONLESS);
+      }
+      else if (derivative > 0) {
+        return new Quantity(y.getPartialDerivative(derivative), Unit.of("µm^-" + derivative));
+      }
+      else {
+        throw new UnsupportedOperationException("Dericative " + derivative + " should not below 0.");
       }
     }
 
-    protected abstract Quantity n(Quantity waveLength);
-
-    protected abstract Quantity dn_dlambda(Quantity waveLength);
-
-    protected abstract Quantity d2n_dlambda2(Quantity waveLength);
-
+    protected abstract DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter);
   }
 
   private static class SellmeierRefractiveEquationFormula1 extends FormulaRefractiveEquation {
@@ -132,36 +131,14 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     }
 
     @Override
-    protected Quantity n(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
-      double n = Math.sqrt(C
-              + (C1C2_2 / (λ2 - C2_2))
-              + (C3C4_2 / (λ2 - C4_2))
-              + (C5C6_2 / (λ2 - C6_2)));
-      return new Quantity(n, Units.DIMENSIONLESS);
+    protected DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter) {
+      DerivativeStructure λ = waveLengthMicroMeter;
+      DerivativeStructure λ2 = λ.multiply(λ);
+      DerivativeStructure A1 = λ2.add(-C2_2).reciprocal().multiply(C1C2_2);
+      DerivativeStructure A2 = λ2.add(-C4_2).reciprocal().multiply(C3C4_2);
+      DerivativeStructure A3 = λ2.add(-C6_2).reciprocal().multiply(C5C6_2);
+      return A1.add(A2).add(A3).add(C).sqrt();
     }
-
-    @Override
-    protected Quantity dn_dlambda(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
-      double n = n(waveLength).getValue("");
-      double dndlamda = -λ / n * (C1C2_2 / (Math.pow(λ2 - C2_2, 2)) + C3C4_2 / (Math.pow(λ2 - C4_2, 2)) + C5C6_2 / (Math.pow(λ2 - C6_2, 2)));
-      return new Quantity(dndlamda, Unit.of("µm^-1"));
-    }
-
-    @Override
-    protected Quantity d2n_dlambda2(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
-      double n = n(waveLength).getValue("");
-      double dndl = dn_dlambda(waveLength).getValue("µm^-1");
-      double d2ndl2 = dndl / λ - dndl * dndl / n + 4 * λ2 / n
-              * (C1C2_2 / (Math.pow(λ2 - C2_2, 3)) + C3C4_2 / (Math.pow(λ2 - C4_2, 3)) + C5C6_2 / (Math.pow(λ2 - C6_2, 3)));
-      return new Quantity(d2ndl2, Unit.of("µm^-2"));
-    }
-
   }
 
   private static class SellmeierRefractiveEquationFormula2 extends FormulaRefractiveEquation {
@@ -174,20 +151,9 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     }
 
     @Override
-    protected Quantity n(Quantity waveLength) {
+    protected DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    protected Quantity dn_dlambda(Quantity waveLength) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    protected Quantity d2n_dlambda2(Quantity waveLength) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
   }
 
   private static class SellmeierRefractiveEquationFormula4 extends FormulaRefractiveEquation {
@@ -200,35 +166,13 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     }
 
     @Override
-    protected Quantity n(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
+    protected DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter) {
+      DerivativeStructure λ = waveLengthMicroMeter;
+      DerivativeStructure λ2 = λ.multiply(λ);
       double[] c = coefficients;
-      double n = Math.sqrt(c[0] + c[1] / (λ2 - c[3]) + c[5] / (λ2 - c[7]));
-      return new Quantity(n, Units.DIMENSIONLESS);
+      DerivativeStructure A1 = λ2.add(-c[3]).reciprocal().multiply(c[1]);
+      DerivativeStructure A2 = λ2.add(-c[7]).reciprocal().multiply(c[5]);
+      return A1.add(A2).add(c[0]).sqrt();
     }
-
-    @Override
-    protected Quantity dn_dlambda(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
-      double[] c = coefficients;
-      double n = n(waveLength).getValue("");
-      double dndlamda = -λ / n * (c[1] / (Math.pow(λ2 - c[3], 2)) + c[5] / (Math.pow(λ2 - c[7], 2)));
-      return new Quantity(dndlamda, Unit.of("µm^-1"));
-    }
-
-    @Override
-    protected Quantity d2n_dlambda2(Quantity waveLength) {
-      double λ = waveLength.getValue("µm");
-      double λ2 = λ * λ;
-      double[] c = coefficients;
-      double n = n(waveLength).getValue("");
-      double dndl = dn_dlambda(waveLength).getValue("µm^-1");
-      double d2ndl2 = dndl / λ - dndl * dndl / n + 4 * λ2 / n
-              * (c[1] / (Math.pow(λ2 - c[3], 3)) + c[5] / (Math.pow(λ2 - c[7], 3)));
-      return new Quantity(d2ndl2, Unit.of("µm^-2"));
-    }
-
   }
 }

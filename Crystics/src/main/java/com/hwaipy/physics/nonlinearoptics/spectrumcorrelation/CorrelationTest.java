@@ -14,10 +14,10 @@ import javax.imageio.ImageIO;
  */
 public class CorrelationTest {
 
-  private static final double minOmigaS = 779.0;
-  private static final double maxOmigaS = 781.0;
-  private static final double minOmigaI = 779.0;
-  private static final double maxOmigaI = 781.0;
+  private static final double minOmigaS = 779.8;
+  private static final double maxOmigaS = 780.2;
+  private static final double minOmigaI = 779.8;
+  private static final double maxOmigaI = 780.2;
   private static final int width = 200;
   private static final int height = 200;
   private static final Filter bandPass780_3 = new BandPassFilter(780, 3, 0);
@@ -32,23 +32,23 @@ public class CorrelationTest {
     CorrelationFunction functionPump = new PumpFunction(390, 1.6);
     functionPump.filterPump(gaussian390_02);
     functionPump.filterPump(fpEtalon390_0015);
-//    plot(functionPump, "pump");
+    plot(functionPump, "pump");
     CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.getMediumByAlias("KTP"), 10, 7.9482);
-//    plot(functionPhaseMatch, "phaseMatch");
+    plot(functionPhaseMatch, "phaseMatch");
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
     plot(functionJoin, "join");
 //        functionJoin.filterSignal(bandPass780_1);
 //        functionJoin.filterSignal(bandPass780_3);
 //        functionJoin.filterIdle(bandPass780_3);
 //        functionJoin.filterSignal(fpEtalon780_0030);
-//    functionJoin.filterIdle(fpEtalon780_0030);
+    functionJoin.filterIdle(fpEtalon780_0030);
     functionJoin.filterSignal(fpEtalon780_0030);
 //    functionJoin.filterSignal(gaussian780_0030);
 //    functionJoin.filterIdle(gaussian780_0030);
 //    functionJoin.filterSignal(new BandPassFilter(780, 0.20, 0));
 //    functionJoin.filterIdle(new BandPassFilter(780, 0.20, 0));
     plot(functionJoin, "filtered");
-//    purity(functionJoin);
+    purity(functionJoin);
 //
     HOM(functionJoin);
   }

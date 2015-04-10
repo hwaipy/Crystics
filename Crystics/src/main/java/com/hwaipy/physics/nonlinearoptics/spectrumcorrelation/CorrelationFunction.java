@@ -27,15 +27,15 @@ public abstract class CorrelationFunction {
   public double value(double signalLamda, double idleLamda) {
     double result = correlationValue(signalLamda, idleLamda);
     double pumpLamda = 1 / (1 / signalLamda + 1 / idleLamda);
-    result = pumpFilters.stream().map((pumpFilter)
-            -> Math.sqrt(pumpFilter.transmittance(pumpLamda))).
-            reduce(result, (accumulator, _item) -> accumulator * _item);
-    result = signalFilters.stream().map((signalFilter)
-            -> Math.sqrt(signalFilter.transmittance(signalLamda)))
-            .reduce(result, (accumulator, _item) -> accumulator * _item);
-    result = idleFilters.stream().map((idleFilter)
-            -> Math.sqrt(idleFilter.transmittance(idleLamda)))
-            .reduce(result, (accumulator, _item) -> accumulator * _item);
+    for (Filter pumpFilter : pumpFilters) {
+      result *= Math.sqrt(pumpFilter.transmittance(pumpLamda));
+    }
+    for (Filter signalFilter : signalFilters) {
+      result *= Math.sqrt(signalFilter.transmittance(signalLamda));
+    }
+    for (Filter idleFilter : idleFilters) {
+      result *= Math.sqrt(idleFilter.transmittance(idleLamda));
+    }
     return result;
   }
 
