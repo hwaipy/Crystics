@@ -1,6 +1,6 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
-import com.hwaipy.physics.crystaloptics.Mediums;
+import com.hwaipy.crystics.Mediums;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class CorrelationTest {
     functionPump.filterPump(gaussian390_02);
     functionPump.filterPump(fpEtalon390_0015);
 //    plot(functionPump, "pump");
-    CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.KTiOPO4, 10, 7.9482);
+    CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.getMediumByAlias("KTP"), 10, 7.9482);
 //    plot(functionPhaseMatch, "phaseMatch");
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
     plot(functionJoin, "join");

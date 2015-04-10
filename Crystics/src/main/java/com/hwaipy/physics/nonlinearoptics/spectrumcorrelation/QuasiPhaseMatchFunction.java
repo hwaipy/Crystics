@@ -1,12 +1,11 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
-import com.hwaipy.measure.unit.Units;
-import com.hwaipy.physics.crystaloptics.Axis;
-import com.hwaipy.physics.crystaloptics.Medium;
-import com.hwaipy.physics.crystaloptics.MonochromaticWave;
-import javax.measure.unit.SI;
-import org.jscience.physics.amount.Amount;
-import org.jscience.physics.amount.Constants;
+import com.hwaipy.crystics.Axis;
+import com.hwaipy.crystics.Medium;
+import com.hwaipy.crystics.MonochromaticWave;
+import com.hwaipy.quantity.PhysicalConstants;
+import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Unit;
 
 /**
  *
@@ -32,12 +31,12 @@ public class QuasiPhaseMatchFunction extends CorrelationFunction {
 
   public double correlationValueDirect(double lamdaSignal, double lamdaIdler) {
     double lamdaPump = 1 / (1 / lamdaSignal + 1 / lamdaIdler);
-    MonochromaticWave pump = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaPump, Units.NANOMETRE));
-    MonochromaticWave signal = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaSignal, Units.NANOMETRE));
-    MonochromaticWave idle = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaIdler, Units.NANOMETRE));
-    double kPump = pump.getWaveNumber(medium, Axis.Y).doubleValue(Units.RECIPROCALMETRE);
-    double kSignal = signal.getWaveNumber(medium, Axis.Y).doubleValue(Units.RECIPROCALMETRE);
-    double kIdler = idle.getWaveNumber(medium, Axis.Z).doubleValue(Units.RECIPROCALMETRE);
+    MonochromaticWave pump = MonochromaticWave.byWaveLength(new Quantity(lamdaPump, Unit.of("nm")));
+    MonochromaticWave signal = MonochromaticWave.byWaveLength(new Quantity(lamdaSignal, Unit.of("nm")));
+    MonochromaticWave idle = MonochromaticWave.byWaveLength(new Quantity(lamdaIdler, Unit.of("nm")));
+    double kPump = pump.getWaveNumber(medium, Axis.Y).getValue("/m");
+    double kSignal = signal.getWaveNumber(medium, Axis.Y).getValue("/m");
+    double kIdler = idle.getWaveNumber(medium, Axis.Z).getValue("/m");
 
     double arg = lengthOfCrystal / 2 * (kPump - kSignal - kIdler - 2 * Math.PI / period);
     double result = Math.sin(arg) / arg;
@@ -46,19 +45,19 @@ public class QuasiPhaseMatchFunction extends CorrelationFunction {
 
   public double correlationValueApproximate(double lamdaSignal, double lamdaIdler) {
     double lamdaPump = 1 / (1 / lamdaSignal + 1 / lamdaIdler);
-    MonochromaticWave pump = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaPump, Units.NANOMETRE));
-    MonochromaticWave signal = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaSignal, Units.NANOMETRE));
-    MonochromaticWave idle = MonochromaticWave.byWaveLength(Amount.valueOf(lamdaIdler, Units.NANOMETRE));
-    double ngPump = medium.getGroupIndex(pump, Axis.Y);
-    double ngSignal = medium.getGroupIndex(signal, Axis.Y);
-    double ngIdle = medium.getGroupIndex(idle, Axis.Z);
-    MonochromaticWave pdcCenter = MonochromaticWave.byWaveLength(Amount.valueOf(780, Units.NANOMETRE));
-    double omegaPDCCenter = pdcCenter.getAngularFrequency().doubleValue(SI.HERTZ);
-    double omegaPDCSignal = signal.getAngularFrequency().doubleValue(SI.HERTZ);
-    double omegaPDCIdle = idle.getAngularFrequency().doubleValue(SI.HERTZ);
+    MonochromaticWave pump = MonochromaticWave.byWaveLength(new Quantity(lamdaPump, Unit.of("nm")));
+    MonochromaticWave signal = MonochromaticWave.byWaveLength(new Quantity(lamdaSignal, Unit.of("nm")));
+    MonochromaticWave idle = MonochromaticWave.byWaveLength(new Quantity(lamdaIdler, Unit.of("nm")));
+    double ngPump = medium.getGroupRefractive(pump, Axis.Y).getValue();
+    double ngSignal = medium.getGroupRefractive(signal, Axis.Y).getValue();
+    double ngIdle = medium.getGroupRefractive(idle, Axis.Z).getValue();
+    MonochromaticWave pdcCenter = MonochromaticWave.byWaveLength(new Quantity(780, Unit.of("nm")));
+    double omegaPDCCenter = pdcCenter.getAngularFrequency().getValue("Hz");
+    double omegaPDCSignal = signal.getAngularFrequency().getValue("Hz");
+    double omegaPDCIdle = idle.getAngularFrequency().getValue("Hz");
     double vo = omegaPDCSignal - omegaPDCCenter;
     double ve = omegaPDCIdle - omegaPDCCenter;
-    double c = Constants.c.doubleValue(SI.METERS_PER_SECOND);
+    double c = PhysicalConstants.c.getValue("m/s");
     double kpp = ngPump / c;
     double kop = ngSignal / c;
     double kep = ngIdle / c;

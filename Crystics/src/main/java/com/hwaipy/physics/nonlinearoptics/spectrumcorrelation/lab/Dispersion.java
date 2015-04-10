@@ -1,11 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.lab;
 
-import com.hwaipy.physics.crystaloptics.Mediums;
+import com.hwaipy.crystics.Mediums;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationPloter;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.HOMVisibilityCalculator;
@@ -31,7 +26,7 @@ public class Dispersion {
 
   public static void main(String[] args) throws IOException {
     CorrelationFunction functionPump = new PumpFunction(775, 0.36);
-    CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.KTiOPO4, 30, -45.04);
+    CorrelationFunction functionPhaseMatch = new QuasiPhaseMatchFunction(Mediums.getMediumByAlias("KTP"), 30, -45.04);
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
     plot(functionJoin, "filtered");
 //    for (int i = 0; i <= 200; i++) {
