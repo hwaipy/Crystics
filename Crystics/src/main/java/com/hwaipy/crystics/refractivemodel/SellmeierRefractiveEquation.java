@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics.refractivemodel;
 
 import com.hwaipy.quantity.Quantity;
@@ -65,6 +60,14 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
   }
 
   static {
+    register("1", new SellmeierRefractiveEquationFactory() {
+
+      @Override
+      public SellmeierRefractiveEquation newInstance(double... coefficients) {
+        return new SellmeierRefractiveEquationFormula1(coefficients);
+      }
+
+    });
     register("2", new SellmeierRefractiveEquationFactory() {
 
       @Override
@@ -108,6 +111,56 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     protected abstract Quantity dn_dlambda(Quantity waveLength);
 
     protected abstract Quantity d2n_dlambda2(Quantity waveLength);
+
+  }
+
+  private static class SellmeierRefractiveEquationFormula1 extends FormulaRefractiveEquation {
+
+    private final double C2_2 = coefficients[2] * coefficients[2];
+    private final double C1C2_2 = coefficients[1] * C2_2;
+    private final double C4_2 = coefficients[4] * coefficients[4];
+    private final double C3C4_2 = coefficients[3] * C4_2;
+    private final double C6_2 = coefficients[6] * coefficients[6];
+    private final double C5C6_2 = coefficients[5] * C6_2;
+    private final double C = 1 + coefficients[1] + coefficients[3] + coefficients[5];
+
+    public SellmeierRefractiveEquationFormula1(double... coefficients) {
+      super(coefficients);
+      if (coefficients.length != 7) {
+        throw new IllegalArgumentException("Formula 4 can only access 9 parameters.");
+      }
+    }
+
+    @Override
+    protected Quantity n(Quantity waveLength) {
+      double λ = waveLength.getValue("µm");
+      double λ2 = λ * λ;
+      double n = Math.sqrt(C
+              + (C1C2_2 / (λ2 - C2_2))
+              + (C3C4_2 / (λ2 - C4_2))
+              + (C5C6_2 / (λ2 - C6_2)));
+      return new Quantity(n, Units.DIMENSIONLESS);
+    }
+
+    @Override
+    protected Quantity dn_dlambda(Quantity waveLength) {
+      double λ = waveLength.getValue("µm");
+      double λ2 = λ * λ;
+      double n = n(waveLength).getValue("");
+      double dndlamda = -λ / n * (C1C2_2 / (Math.pow(λ2 - C2_2, 2)) + C3C4_2 / (Math.pow(λ2 - C4_2, 2)) + C5C6_2 / (Math.pow(λ2 - C6_2, 2)));
+      return new Quantity(dndlamda, Unit.of("µm^-1"));
+    }
+
+    @Override
+    protected Quantity d2n_dlambda2(Quantity waveLength) {
+      double λ = waveLength.getValue("µm");
+      double λ2 = λ * λ;
+      double n = n(waveLength).getValue("");
+      double dndl = dn_dlambda(waveLength).getValue("µm^-1");
+      double d2ndl2 = dndl / λ - dndl * dndl / n + 4 * λ2 / n
+              * (C1C2_2 / (Math.pow(λ2 - C2_2, 3)) + C3C4_2 / (Math.pow(λ2 - C4_2, 3)) + C5C6_2 / (Math.pow(λ2 - C6_2, 3)));
+      return new Quantity(d2ndl2, Unit.of("µm^-2"));
+    }
 
   }
 
@@ -172,7 +225,7 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
       double[] c = coefficients;
       double n = n(waveLength).getValue("");
       double dndl = dn_dlambda(waveLength).getValue("µm^-1");
-      double d2ndl2 = -dndl / n + 2 * λ / n
+      double d2ndl2 = dndl / λ - dndl * dndl / n + 4 * λ2 / n
               * (c[1] / (Math.pow(λ2 - c[3], 3)) + c[5] / (Math.pow(λ2 - c[7], 3)));
       return new Quantity(d2ndl2, Unit.of("µm^-2"));
     }

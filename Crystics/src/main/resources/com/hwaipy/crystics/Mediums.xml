@@ -90,37 +90,25 @@ and open the template in the editor.
   </medium>
   <medium>
     <symbol>SiO2</symbol>
-    <name>Silicon dioxide</name>
-    <alias>Silica</alias>
-    <alias>Quartz</alias>
+    <name>Fused silica</name>
     <refractive>
       <range>
-        <from>0.198</from>
-        <to>2.0531</to>
+        <from>0.21</from>
+        <to>3.71</to>
       </range>
-      <ne>
+      <n>
         <refractive-model>          
           <system>
             <sellmeier>
-              <formula>2</formula>
-              <coefficients>0.28851804,1.09509924,1.02101864e-2,1.15662475,100</coefficients>
+              <formula>1</formula>
+              <coefficients>0,0.6961663,0.0684043,0.4079426,0.1162414,0.8974794,9.896161</coefficients>
             </sellmeier>
           </system>
         </refractive-model>
-      </ne>
-      <no>
-        <refractive-model>
-          <system>
-            <sellmeier>
-              <formula>2</formula>
-              <coefficients>0.28604141,1.07044083,1.00585997e-2,1.10202242,100</coefficients>
-            </sellmeier>
-          </system>
-        </refractive-model>
-      </no>
+      </n>
       <reference>
-        <doi>10.1016/S0030-4018(99)00091-7</doi>
-        <description>G. Ghosh. Dispersion-equation coefficients for the refractive index and birefringence of calcite and quartz crystals, Opt. Commun. 163, 95-102 (1999).</description>
+        <doi>10.1364/JOSA.55.001205</doi>
+        <description>I. H. Malitson. Interspecimen Comparison of the Refractive Index of Fused Silica, J. Opt. Soc. Am. 55, 1205-1208 (1965)</description>
       </reference>
     </refractive>
   </medium>

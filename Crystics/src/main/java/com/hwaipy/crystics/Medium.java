@@ -1,13 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics;
 
-import static com.hwaipy.crystics.MonochromaticWave.λ;
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
-import com.hwaipy.quantity.Constants;
+import com.hwaipy.quantity.PhysicalConstants;
 import com.hwaipy.quantity.Quantity;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,12 +59,9 @@ public class Medium {
 
   public Quantity getGVD(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity lambda = monochromaticWave.getWaveLength();
-    Quantity n = refractiveModel.getRefractive(lambda, 0, axis);
-    Quantity dndl = refractiveModel.getRefractive(lambda, 1, axis);
     Quantity d2ndl2 = refractiveModel.getRefractive(lambda, 2, axis);
-    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(Constants.c.power(2));
-    System.out.println(gvd.getValue("fs^2/mm"));
-    return n.minus(dndl.times(lambda));
+    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(PhysicalConstants.c.power(2));
+    return gvd;
   }
 
   public Quantity getWaveNumber(MonochromaticWave monochromaticWave, Axis axis) {
@@ -88,11 +79,6 @@ public class Medium {
 
   public Quantity getAbbeNumverVe(Axis axis) {
     return AbbeNumber.Ve(this, axis);
-  }
-
-  public static void main(String[] args) {
-    Medium KTP = Mediums.getMediumByAlias("KTP");
-    KTP.getGVD(λ("780nm"), Axis.X);
   }
 
 }
