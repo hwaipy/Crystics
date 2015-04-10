@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics.input;
 
 import com.hwaipy.crystics.Medium;
@@ -129,10 +124,18 @@ public class SellmeierXMLLoader {
     }
     else {
       Element nOelement = refractiveElement.element("no");
-      Element nEelement = refractiveElement.element("ne");
-      refractiveEquationX = parseRefractiveEquation(nEelement);
-      refractiveEquationY = refractiveEquationX;
-      refractiveEquationZ = parseRefractiveEquation(nOelement);
+      if (nOelement != null) {
+        Element nEelement = refractiveElement.element("ne");
+        refractiveEquationX = parseRefractiveEquation(nEelement);
+        refractiveEquationY = refractiveEquationX;
+        refractiveEquationZ = parseRefractiveEquation(nOelement);
+      }
+      else {
+        Element nElement = refractiveElement.element("n");
+        refractiveEquationX = parseRefractiveEquation(nElement);
+        refractiveEquationY = refractiveEquationX;
+        refractiveEquationZ = refractiveEquationX;
+      }
     }
     Element referenceElement = refractiveElement.element("reference");
     Reference reference = parseReference(referenceElement);

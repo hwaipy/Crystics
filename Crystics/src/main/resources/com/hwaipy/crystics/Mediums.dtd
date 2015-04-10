@@ -18,7 +18,7 @@ and open the template in the editor.
 <!ELEMENT symbol (#PCDATA)>
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT alias (#PCDATA)>
-<!ELEMENT refractive (range,((nx,ny,nz)|(ne,no)),reference)>
+<!ELEMENT refractive (range,((nx,ny,nz)|(ne,no)|n),reference)>
 <!ELEMENT range (from,to)>
 <!ELEMENT from (#PCDATA)>
 <!ELEMENT to (#PCDATA)>
@@ -27,6 +27,7 @@ and open the template in the editor.
 <!ELEMENT nz (refractive-model)>
 <!ELEMENT ne (refractive-model)>
 <!ELEMENT no (refractive-model)>
+<!ELEMENT n (refractive-model)>
 <!ELEMENT refractive-model ((system|external))>
 <!ELEMENT system (sellmeier)>
 <!ELEMENT sellmeier (formula,coefficients)>

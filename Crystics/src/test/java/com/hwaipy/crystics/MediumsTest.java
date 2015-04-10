@@ -1,11 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics;
 
+import static com.hwaipy.crystics.Axis.X;
 import static com.hwaipy.crystics.Axis.Y;
+import static com.hwaipy.crystics.Axis.Z;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -74,11 +71,21 @@ public class MediumsTest {
     Quantity dk = w.k(KTP, Y).minus(w_.k(KTP, Y));
     Quantity groupIndex = c.divide(dω).times(dk);
     assertEquals(groupIndex.getValue(""), KTP.N(w, Y).getValue(""), 0.01);
+    assertEquals(210.47, KTP.getGVD(w, Y).getValue("fs^2/mm"), 0.01);
   }
 
   @Test
   public void testMediumsInfo() {
-    fail("Add tests of SiO2.");
+    Medium fibre = Mediums.getMediumByName("Fused silica");
+    MonochromaticWave w780 = λ("780nm");
+    MonochromaticWave w1550 = λ("1550nm");
+    assertEquals(1.4537, fibre.n(w780, X).getValue(""), 0.0001);
+    assertEquals(1.4537, fibre.n(w780, Y).getValue(""), 0.0001);
+    assertEquals(1.4537, fibre.n(w780, Z).getValue(""), 0.0001);
+    assertEquals(1.4440, fibre.n(w1550, Z).getValue(""), 0.0001);
+
+    Quantity gvd = fibre.getGVD(w1550, X);
+    assertEquals(-27.947, gvd.getValue("fs^2/mm"), 0.001);
   }
 
 }

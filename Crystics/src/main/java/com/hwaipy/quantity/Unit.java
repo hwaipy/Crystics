@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.quantity;
 
 import static com.hwaipy.quantity.SIBaseUnit.*;
@@ -193,6 +188,10 @@ public class Unit {
   }
 
   public static Unit of(String unitString) {
+    return U(unitString);
+  }
+
+  public static Unit U(String unitString) {
     Quantity quantity = new QuantityParser(unitString).parse();
     return new UnitBuilder(quantity.getUnit()).times(quantity.getValue()).createUnit();
   }
