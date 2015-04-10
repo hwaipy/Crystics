@@ -12,11 +12,11 @@ import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.HOMVisibilityCalcu
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.JointFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.PumpFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.QuasiPhaseMatchFunction;
-import com.hwaipy.utilities.system.PathsUtilities;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 
 /**
@@ -60,7 +60,7 @@ public class Dispersion {
     CorrelationPloter correlationPloter = new CorrelationPloter(minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, function, 1000, 1000);
     correlationPloter.calculate();
     BufferedImage image = correlationPloter.createImage();
-    Path path = PathsUtilities.getDataStoragyPath();
+    Path path = Paths.get("./input-output/");
     ImageIO.write(image, "png", new File(path.toFile(), name + ".png"));
   }
 

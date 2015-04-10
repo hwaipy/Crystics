@@ -3,11 +3,11 @@ package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 import com.hwaipy.measure.unit.Units;
 import com.hwaipy.physics.crystaloptics.Mediums;
 import com.hwaipy.physics.crystaloptics.MonochromaticWave;
-import com.hwaipy.utilities.system.PathsUtilities;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 import javax.measure.quantity.Frequency;
 import org.jscience.physics.amount.Amount;
@@ -62,7 +62,7 @@ public class CorrelationCompare {
         CorrelationPloter correlationPloter = new CorrelationPloter(minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, function, width, height);
         correlationPloter.calculate();
         BufferedImage image = correlationPloter.createImage();
-        Path path = PathsUtilities.getDataStoragyPath();
+        Path path = Paths.get("./input-output/");
         ImageIO.write(image, "png", new File(path.toFile(), name + ".png"));
     }
 

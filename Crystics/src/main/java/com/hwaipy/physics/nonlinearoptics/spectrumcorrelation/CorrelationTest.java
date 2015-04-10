@@ -1,11 +1,11 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
 import com.hwaipy.physics.crystaloptics.Mediums;
-import com.hwaipy.utilities.system.PathsUtilities;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.imageio.ImageIO;
 
 /**
@@ -57,7 +57,7 @@ public class CorrelationTest {
     CorrelationPloter correlationPloter = new CorrelationPloter(minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, function, width, height);
     correlationPloter.calculate();
     BufferedImage image = correlationPloter.createImage();
-    Path path = PathsUtilities.getDataStoragyPath();
+    Path path = Paths.get("./input-output/");
     ImageIO.write(image, "png", new File(path.toFile(), name + ".png"));
 //    double[] statistics1 = correlationPloter.statistics(true);
 //    double[] statistics2 = correlationPloter.statistics(false);
