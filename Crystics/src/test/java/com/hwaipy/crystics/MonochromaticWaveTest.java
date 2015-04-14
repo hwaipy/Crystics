@@ -1,10 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics;
 
+import static com.hwaipy.crystics.MonochromaticWave.λ;
+import static com.hwaipy.crystics.MonochromaticWave.ν;
+import static com.hwaipy.crystics.MonochromaticWave.ω;
 import com.hwaipy.quantity.Quantity;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -40,28 +38,28 @@ public class MonochromaticWaveTest {
 
   @Test
   public void testGetWaveLength() {
-    double lambda1 = MonochromaticWave.byAngularFrequency(Quantity.of("2.41493790679487e3THz")).getWaveLength().getValue("nm");
-    double lambda2 = MonochromaticWave.byFrequency(Quantity.of("384349305128205Hz")).getWaveLength().getValue("nm");
-    double lambda3 = MonochromaticWave.byWaveLength(Quantity.of("780nm")).getWaveLength().getValue("nm");
+    MonochromaticWave w1 = ω("2.41493790679487e3THz");
+    MonochromaticWave w2 = ν("384349305128205Hz");
+    MonochromaticWave w3 = λ("780nm");
 
-    MonochromaticWave w4 = MonochromaticWave.byWaveLength(Quantity.of("1.55µm"));
-    w4.setAngularFrequency(Quantity.of("2.41493790679487e3THz"));
-    double lambda4 = w4.getWaveLength().getValue("nm");
+    double λ1 = w1.λ().getValue("nm");
+    double ν1 = w1.ν().getValue("THz");
+    double ω1 = w1.ω().getValue("THz");
+    double λ2 = w2.λ().getValue("nm");
+    double ν2 = w2.ν().getValue("THz");
+    double ω2 = w2.ω().getValue("THz");
+    double λ3 = w3.λ().getValue("nm");
+    double ν3 = w3.ν().getValue("THz");
+    double ω3 = w3.ω().getValue("THz");
 
-    MonochromaticWave w5 = MonochromaticWave.byWaveLength(Quantity.of("1.55µm"));
-    w5.setFrequency(Quantity.of("384349305128205Hz"));
-    double lambda5 = w5.getWaveLength().getValue("nm");
-
-    MonochromaticWave w6 = MonochromaticWave.byWaveLength(Quantity.of("1.55µm"));
-    w6.setWaveLength(Quantity.of("780nm"));
-    double lambda6 = w6.getWaveLength().getValue("nm");
-
-    assertEquals(780, lambda1, 0.00001);
-    assertEquals(780, lambda2, 0.00001);
-    assertEquals(780, lambda3, 0.00001);
-    assertEquals(780, lambda4, 0.00001);
-    assertEquals(780, lambda5, 0.00001);
-    assertEquals(780, lambda6, 0.00001);
+    assertEquals(780, λ1, 0.00001);
+    assertEquals(780, λ2, 0.00001);
+    assertEquals(780, λ3, 0.00001);
+    assertEquals(384.349305128205, ν1, 0.00001);
+    assertEquals(384.349305128205, ν2, 0.00001);
+    assertEquals(384.349305128205, ν3, 0.00001);
+    assertEquals(2.41493790679487e3, ω1, 0.00001);
+    assertEquals(2.41493790679487e3, ω2, 0.00001);
+    assertEquals(2.41493790679487e3, ω3, 0.00001);
   }
-
 }

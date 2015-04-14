@@ -1,5 +1,10 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
+import com.hwaipy.crystics.MonochromaticWave;
+import com.hwaipy.crystics.filter.OpticalFilter;
+import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Unit;
+import com.hwaipy.quantity.Units;
 import java.util.ArrayList;
 
 /**
@@ -8,33 +13,33 @@ import java.util.ArrayList;
  */
 public abstract class CorrelationFunction {
 
-  private final ArrayList<Filter> pumpFilters = new ArrayList<>();
-  private final ArrayList<Filter> signalFilters = new ArrayList<>();
-  private final ArrayList<Filter> idleFilters = new ArrayList<>();
+  private final ArrayList<OpticalFilter> pumpFilters = new ArrayList<>();
+  private final ArrayList<OpticalFilter> signalFilters = new ArrayList<>();
+  private final ArrayList<OpticalFilter> idleFilters = new ArrayList<>();
 
-  public void filterPump(Filter filter) {
+  public void filterPump(OpticalFilter filter) {
     pumpFilters.add(filter);
   }
 
-  public void filterSignal(Filter filter) {
+  public void filterSignal(OpticalFilter filter) {
     signalFilters.add(filter);
   }
 
-  public void filterIdle(Filter filter) {
+  public void filterIdle(OpticalFilter filter) {
     idleFilters.add(filter);
   }
 
   public double value(double signalLamda, double idleLamda) {
     double result = correlationValue(signalLamda, idleLamda);
     double pumpLamda = 1 / (1 / signalLamda + 1 / idleLamda);
-    for (Filter pumpFilter : pumpFilters) {
-      result *= Math.sqrt(pumpFilter.transmittance(pumpLamda));
+    for (OpticalFilter pumpFilter : pumpFilters) {
+      result *= Math.sqrt(pumpFilter.transmittance(MonochromaticWave.λ(new Quantity(pumpLamda, Unit.of("nm")))).getValue(Units.DIMENSIONLESS));
     }
-    for (Filter signalFilter : signalFilters) {
-      result *= Math.sqrt(signalFilter.transmittance(signalLamda));
+    for (OpticalFilter signalFilter : signalFilters) {
+      result *= Math.sqrt(signalFilter.transmittance(MonochromaticWave.λ(new Quantity(signalLamda, Unit.of("nm")))).getValue(Units.DIMENSIONLESS));
     }
-    for (Filter idleFilter : idleFilters) {
-      result *= Math.sqrt(idleFilter.transmittance(idleLamda));
+    for (OpticalFilter idleFilter : idleFilters) {
+      result *= Math.sqrt(idleFilter.transmittance(MonochromaticWave.λ(new Quantity(idleLamda, Unit.of("nm")))).getValue(Units.DIMENSIONLESS));
     }
     return result;
   }

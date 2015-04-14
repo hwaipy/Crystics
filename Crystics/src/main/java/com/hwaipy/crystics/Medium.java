@@ -54,19 +54,19 @@ public class Medium {
     Quantity lambda = monochromaticWave.getWaveLength();
     Quantity n = refractiveModel.getRefractive(lambda, 0, axis);
     Quantity dndl = refractiveModel.getRefractive(lambda, 1, axis);
-    return n.minus(dndl.times(lambda));
+    return n.minus(dndl.multiply(lambda));
   }
 
   public Quantity getGVD(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity lambda = monochromaticWave.getWaveLength();
     Quantity d2ndl2 = refractiveModel.getRefractive(lambda, 2, axis);
-    Quantity gvd = d2ndl2.times(lambda.power(3)).divide(2 * Math.PI).divide(PhysicalConstants.c.power(2));
+    Quantity gvd = d2ndl2.multiply(lambda.power(3)).divide(2 * Math.PI).divide(PhysicalConstants.c.power(2));
     return gvd;
   }
 
   public Quantity getWaveNumber(MonochromaticWave monochromaticWave, Axis axis) {
     Quantity n = getRefractive(monochromaticWave, axis);
-    return n.times(2 * Math.PI).divide(monochromaticWave.getWaveLength());
+    return n.multiply(2 * Math.PI).divide(monochromaticWave.getWaveLength());
   }
 
   public Quantity getAbbeNumverVD(Axis axis) {

@@ -1,5 +1,9 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
+import com.hwaipy.crystics.filter.GaussianFilter;
+import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Unit;
+
 /**
  *
  * @author Hwaipy
@@ -7,7 +11,7 @@ package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 public class PumpFunction extends CorrelationFunction {
 
   public PumpFunction(double wavelength, double FWHM) {
-    filterPump(new GaussianFilter(wavelength, FWHM / 2.35));
+    filterPump(GaussianFilter.newInstanceByWaveLengthSigma(new Quantity(wavelength, Unit.U("nm")), new Quantity(FWHM, Unit.U("nm")).divide(2.35)));
   }
 
   @Override

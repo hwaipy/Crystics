@@ -69,7 +69,7 @@ public class MediumsTest {
     MonochromaticWave w_ = λ("780.00000001nm");
     Quantity dω = w.ω().minus(w_.ω());
     Quantity dk = w.k(KTP, Y).minus(w_.k(KTP, Y));
-    Quantity groupIndex = c.divide(dω).times(dk);
+    Quantity groupIndex = c.divide(dω).multiply(dk);
     assertEquals(groupIndex.getValue(""), KTP.N(w, Y).getValue(""), 0.01);
     assertEquals(210.47, KTP.getGVD(w, Y).getValue("fs^2/mm"), 0.01);
   }

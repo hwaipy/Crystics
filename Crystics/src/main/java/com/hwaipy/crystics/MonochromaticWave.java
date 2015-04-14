@@ -2,6 +2,8 @@ package com.hwaipy.crystics;
 
 import static com.hwaipy.quantity.PhysicalConstants.c;
 import com.hwaipy.quantity.Quantity;
+import static com.hwaipy.quantity.Quantity.Q;
+import com.hwaipy.quantity.Units;
 
 /**
  * @author Hwaipy 2015-3-21
@@ -9,12 +11,10 @@ import com.hwaipy.quantity.Quantity;
 public class MonochromaticWave {
 
   private Quantity angularFrequency;
+  private Quantity frequency;
+  private Quantity waveLength;
 
   private MonochromaticWave() {
-  }
-
-  private MonochromaticWave(Quantity angularFrequency) {
-    this.angularFrequency = angularFrequency;
   }
 
   public Quantity λ() {
@@ -22,12 +22,22 @@ public class MonochromaticWave {
   }
 
   public Quantity getWaveLength() {
-    return c.times(2 * Math.PI).divide(angularFrequency);
+    if (waveLength == null) {
+      fillWaveLength();
+    }
+    return waveLength;
   }
 
-  public void setWaveLength(Quantity wavelength) {
-    wavelength.assertDimention("m");
-    angularFrequency = c.times(2 * Math.PI).divide(wavelength);
+  public MonochromaticWave shiftλ(String dλ) {
+    return shiftByWaveLength(Q(dλ));
+  }
+
+  public MonochromaticWave shiftλ(Quantity dλ) {
+    return shiftByWaveLength(dλ);
+  }
+
+  public MonochromaticWave shiftByWaveLength(Quantity dλ) {
+    return λ(λ().plus(dλ));
   }
 
   public Quantity ν() {
@@ -35,12 +45,22 @@ public class MonochromaticWave {
   }
 
   public Quantity getFrequency() {
-    return angularFrequency.divide(2 * Math.PI);
+    if (frequency == null) {
+      fillFrequency();
+    }
+    return frequency;
   }
 
-  public void setFrequency(Quantity frequancy) {
-    frequancy.assertDimention("Hz");
-    angularFrequency = frequancy.times(2 * Math.PI);
+  public MonochromaticWave shiftν(String dν) {
+    return shiftByFrequency(Q(dν));
+  }
+
+  public MonochromaticWave shiftν(Quantity dν) {
+    return shiftByFrequency(dν);
+  }
+
+  public MonochromaticWave shiftByFrequency(Quantity dν) {
+    return ν(ν().plus(dν));
   }
 
   public Quantity ω() {
@@ -48,11 +68,22 @@ public class MonochromaticWave {
   }
 
   public Quantity getAngularFrequency() {
+    if (angularFrequency == null) {
+      fillAngularFrequency();
+    }
     return angularFrequency;
   }
 
-  public void setAngularFrequency(Quantity angularFrequency) {
-    this.angularFrequency = angularFrequency;
+  public MonochromaticWave shiftω(String dω) {
+    return shiftByAngularFrequency(Q(dω));
+  }
+
+  public MonochromaticWave shiftω(Quantity dω) {
+    return shiftByAngularFrequency(dω);
+  }
+
+  public MonochromaticWave shiftByAngularFrequency(Quantity dω) {
+    return ω(ω().plus(dω));
   }
 
   public Quantity k(Medium medium, Axis axis) {
@@ -63,22 +94,58 @@ public class MonochromaticWave {
     return medium.getWaveNumber(this, axis);
   }
 
+  public int compareWaveLength(MonochromaticWave wave) {
+    return this.getWaveLength().compareTo(wave.getWaveLength());
+  }
+
+  public int compareFrequency(MonochromaticWave wave) {
+    return this.getAngularFrequency().compareTo(wave.getAngularFrequency());
+  }
+
+  private void fillWaveLength() {
+    if (angularFrequency != null) {
+      waveLength = c.multiply(2 * Math.PI).divide(angularFrequency);
+    }
+    else {
+      waveLength = c.divide(frequency);
+    }
+  }
+
+  private void fillFrequency() {
+    if (angularFrequency != null) {
+      frequency = angularFrequency.divide(2 * Math.PI);
+    }
+    else {
+      frequency = c.divide(waveLength);
+    }
+  }
+
+  private void fillAngularFrequency() {
+    if (frequency != null) {
+      angularFrequency = frequency.multiply(2 * Math.PI);
+    }
+    else {
+      angularFrequency = c.multiply(2 * Math.PI).divide(waveLength);
+    }
+  }
+
   public static MonochromaticWave λ(String wavelength) {
-    return byWaveLength(Quantity.of(wavelength));
+    return byWaveLength(Q(wavelength));
   }
 
   public static MonochromaticWave λ(Quantity wavelength) {
     return byWaveLength(wavelength);
   }
 
-  public static MonochromaticWave byWaveLength(Quantity wavelength) {
+  public static MonochromaticWave byWaveLength(Quantity waveLength) {
+    waveLength.assertDimention(Units.m);
     MonochromaticWave monochromaticWave = new MonochromaticWave();
-    monochromaticWave.setWaveLength(wavelength);
+    monochromaticWave.waveLength = waveLength;
     return monochromaticWave;
   }
 
   public static MonochromaticWave ν(String frequancy) {
-    return byFrequency(Quantity.of(frequancy));
+    return byFrequency(Q(frequancy));
   }
 
   public static MonochromaticWave ν(Quantity frequency) {
@@ -86,13 +153,14 @@ public class MonochromaticWave {
   }
 
   public static MonochromaticWave byFrequency(Quantity frequency) {
+    frequency.assertDimention(Units.Hz);
     MonochromaticWave monochromaticWave = new MonochromaticWave();
-    monochromaticWave.setFrequency(frequency);
+    monochromaticWave.frequency = frequency;
     return monochromaticWave;
   }
 
   public static MonochromaticWave ω(String angularFrequency) {
-    return byAngularFrequency(Quantity.of(null));
+    return byAngularFrequency(Q(angularFrequency));
   }
 
   public static MonochromaticWave ω(Quantity angularFrequency) {
@@ -100,7 +168,9 @@ public class MonochromaticWave {
   }
 
   public static MonochromaticWave byAngularFrequency(Quantity angularFrequency) {
-    return new MonochromaticWave(angularFrequency);
+    angularFrequency.assertDimention(Units.Hz);
+    MonochromaticWave monochromaticWave = new MonochromaticWave();
+    monochromaticWave.angularFrequency = angularFrequency;
+    return monochromaticWave;
   }
-
 }

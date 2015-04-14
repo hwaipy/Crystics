@@ -1,5 +1,8 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
+import com.hwaipy.crystics.filter.GaussianFilter;
+import com.hwaipy.crystics.filter.BandPassFilter;
+import com.hwaipy.crystics.filter.OpticalFilter;
 import com.hwaipy.crystics.Mediums;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,13 +23,13 @@ public class CorrelationTest {
   private static final double maxOmigaI = 780.2;
   private static final int width = 200;
   private static final int height = 200;
-  private static final Filter bandPass780_3 = new BandPassFilter(780, 3, 0);
-  private static final Filter bandPass780_1 = new BandPassFilter(780, 1, 0);
-  private static final Filter gaussian390_02 = new GaussianFilter(390, 0.2 / 2.35);
-  private static final Filter gaussian390_0015 = new GaussianFilter(390, 0.015 / 2.35);
-  private static final Filter gaussian780_0030 = new GaussianFilter(780, 0.030 / 2.35);
-  private static final Filter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
-  private static final Filter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
+  private static final OpticalFilter bandPass780_3 = BandPassFilter.newInstanceByWaveLength("780nm", "3nm");
+  private static final OpticalFilter bandPass780_1 = BandPassFilter.newInstanceByWaveLength("780nm", "1nm");
+  private static final OpticalFilter gaussian390_02 = GaussianFilter.newInstanceByWaveLengthFWHM("390nm", "0.2nm");
+  private static final OpticalFilter gaussian390_0015 = GaussianFilter.newInstanceByWaveLengthFWHM("390nm", "0.015");
+  private static final OpticalFilter gaussian780_0030 = GaussianFilter.newInstanceByWaveLengthFWHM("780nm", "0.030");
+  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
+  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
 
   public static void main(String[] args) throws IOException {
     CorrelationFunction functionPump = new PumpFunction(390, 1.6);

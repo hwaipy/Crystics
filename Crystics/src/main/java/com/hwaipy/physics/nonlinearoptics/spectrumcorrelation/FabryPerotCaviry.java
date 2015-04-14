@@ -1,33 +1,42 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
+import com.hwaipy.crystics.MonochromaticWave;
+import com.hwaipy.crystics.filter.OpticalFilter;
+import com.hwaipy.quantity.Quantity;
+import com.hwaipy.quantity.Units;
+
 /**
  *
  * @author Hwaipy
  */
-public class FabryPerotCaviry implements Filter {
+public class FabryPerotCaviry implements OpticalFilter {
 
-    private final double R;
-    private final double l;
-    private final double F;
-    private final double finesse;
+  private final double R;
+  private final double l;
+  private final double F;
+  private final double finesse;
 
-    public FabryPerotCaviry(double R, double l) {
-        this.R = R;
-        this.l = l;
-        F = 4 * R / Math.pow(1 - R, 2);
-        finesse = Math.PI / 2 / Math.asin(1 / Math.sqrt(F));
-    }
+  public FabryPerotCaviry(double R, double l) {
+    this.R = R;
+    this.l = l;
+    F = 4 * R / Math.pow(1 - R, 2);
+    finesse = Math.PI / 2 / Math.asin(1 / Math.sqrt(F));
+  }
 
-    public double getFSR(double lamda0) {
-        return Math.pow(lamda0, 2) / 1e9 / 2 / l;
-    }
+  public double getFSR(double lamda0) {
+    return Math.pow(lamda0, 2) / 1e9 / 2 / l;
+  }
 
-    @Override
-    public double transmittance(double lamda) {
-        double delta = 4 * Math.PI * l / (lamda / 1e9);
-        double T = 1 / (1 + F * Math.pow(Math.sin(delta / 2), 2));
-        return T;
-    }
+  @Override
+  public Quantity transmittance(MonochromaticWave wave) {
+    return new Quantity(transmittance(wave.λ().getValue("nm")), Units.DIMENSIONLESS);
+  }
+
+  public double transmittance(double lamda) {
+    double delta = 4 * Math.PI * l / (lamda / 1e9);
+    double T = 1 / (1 + F * Math.pow(Math.sin(delta / 2), 2));
+    return T;
+  }
 //    public static void main(String[] args) {
 //        FabryPerotCaviry fpc = new FabryPerotCaviry(0.855, 0.2535 / 1000, true);
 //        System.out.println(fpc.F);

@@ -1,8 +1,12 @@
 package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation;
 
+import com.hwaipy.crystics.filter.GaussianFilter;
+import com.hwaipy.crystics.filter.BandPassFilter;
+import com.hwaipy.crystics.filter.OpticalFilter;
 import com.hwaipy.crystics.Mediums;
 import com.hwaipy.crystics.MonochromaticWave;
 import com.hwaipy.quantity.Quantity;
+import static com.hwaipy.quantity.Quantity.Q;
 import com.hwaipy.quantity.Unit;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,13 +27,13 @@ public class CorrelationCompare {
   private static final double maxOmigaI = 780.5;
   private static final int width = 200;
   private static final int height = 200;
-  private static final Filter bandPass780_3 = new BandPassFilter(780, 3, 0);
-  private static final Filter bandPass780_1 = new BandPassFilter(780, 1, 0);
-  private static final Filter gaussian390_02 = new GaussianFilter(390, 0.2 / 2.35);
-  private static final Filter gaussian390_0015 = new GaussianFilter(390, 0.015 / 2.35);
-  private static final Filter gaussian780_0030 = new GaussianFilter(780, 0.030 / 2.35);
-  private static final Filter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
-  private static final Filter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
+  private static final OpticalFilter bandPass780_3 = BandPassFilter.newInstanceByWaveLength("780nm", "3nm");
+  private static final OpticalFilter bandPass780_1 = BandPassFilter.newInstanceByWaveLength("780nm", "1nm");
+  private static final OpticalFilter gaussian390_02 = GaussianFilter.newInstanceByWaveLengthSigma(Q("390nm"), Q("0.2nm").divide(2.35));
+  private static final OpticalFilter gaussian390_0015 = GaussianFilter.newInstanceByWaveLengthSigma(Q("390nm"), Q("0.015").divide(2.35));
+  private static final OpticalFilter gaussian780_0030 = GaussianFilter.newInstanceByWaveLengthSigma(Q("780nm"), Q("0.030").divide(2.35));
+  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
+  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
 
   public static void main(String[] args) throws IOException {
     double sigmaPumpA = 0.968;//nm
@@ -42,8 +46,8 @@ public class CorrelationCompare {
     MonochromaticWave pdcCenter = MonochromaticWave.byWaveLength(new Quantity(780, Unit.of("nm")));
     Quantity pdcCenterOmega = pdcCenter.getAngularFrequency();
     Quantity deltaOmega = new Quantity(0.76927, Unit.of("THz"));
-    Quantity pdcOmega1 = pdcCenterOmega.add(deltaOmega);
-    Quantity pdcOmega2 = pdcOmega1.add(deltaOmega);
+    Quantity pdcOmega1 = pdcCenterOmega.plus(deltaOmega);
+    Quantity pdcOmega2 = pdcOmega1.plus(deltaOmega);
     double pdcWL1 = MonochromaticWave.byAngularFrequency(pdcOmega1).getWaveLength().getValue(Unit.of("nm"));
     double pdcWL2 = MonochromaticWave.byAngularFrequency(pdcOmega2).getWaveLength().getValue(Unit.of("nm"));
 //        System.out.println(pdcWL);
