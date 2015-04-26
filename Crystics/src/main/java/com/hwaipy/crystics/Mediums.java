@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.hwaipy.crystics;
 
 import com.hwaipy.crystics.input.SellmeierXMLLoader;
@@ -11,16 +6,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Hwaipy 2015-3-19
  */
 public class Mediums {
 
-  private static final HashMap<String, ArrayList<Medium>> symbolMap = new HashMap<String, ArrayList<Medium>>();
-  private static final HashMap<String, ArrayList<Medium>> nameMap = new HashMap<String, ArrayList<Medium>>();
-  private static final HashMap<String, ArrayList<Medium>> aliasMap = new HashMap<String, ArrayList<Medium>>();
-  private static final ArrayList<Medium> mediumsList = new ArrayList<Medium>();
+  private static final HashMap<String, ArrayList<Medium>> symbolMap = new HashMap<>();
+  private static final HashMap<String, ArrayList<Medium>> nameMap = new HashMap<>();
+  private static final HashMap<String, ArrayList<Medium>> aliasMap = new HashMap<>();
+  private static final ArrayList<Medium> mediumsList = new ArrayList<>();
 
   public static Medium getMediumBySymbol(String symbol) {
     ArrayList<Medium> list = symbolMap.get(symbol);
@@ -92,14 +88,18 @@ public class Mediums {
   private static void register(Medium medium, String id, HashMap<String, ArrayList<Medium>> map) {
     ArrayList<Medium> mappedList = map.get(id);
     if (mappedList == null) {
-      mappedList = new ArrayList<Medium>();
+      mappedList = new ArrayList<>();
       map.put(id, mappedList);
     }
     mappedList.add(medium);
   }
 
   static {
-    load(SellmeierXMLLoader.class.getResourceAsStream("/com/hwaipy/crystics/Mediums.xml"));
+    try {
+      load(SellmeierXMLLoader.class.getResourceAsStream("/com/hwaipy/crystics/Mediums.xml"));
+    } catch (Exception e) {
+      LoggerFactory.getLogger(Mediums.class).error("Error in initialize class Mediums.", e);
+    }
   }
 
 }

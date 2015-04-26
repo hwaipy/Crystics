@@ -4,7 +4,6 @@ import com.hwaipy.crystics.Medium;
 import com.hwaipy.crystics.Mediums;
 import com.hwaipy.crystics.refractivemodel.Range;
 import com.hwaipy.crystics.refractivemodel.RefractiveEquation;
-import com.hwaipy.crystics.refractivemodel.RefractiveModel;
 import com.hwaipy.crystics.refractivemodel.DefaultRefractiveModel;
 import com.hwaipy.crystics.refractivemodel.SellmeierRefractiveEquation;
 import com.hwaipy.references.DOI;
@@ -78,7 +77,7 @@ public class SellmeierXMLLoader {
   }
 
   private static Collection<Medium> parse(Element rootElement) {
-    LinkedList<Medium> mediumList = new LinkedList<Medium>();
+    LinkedList<Medium> mediumList = new LinkedList<>();
     List<Element> mediumElements = rootElement.elements();
     for (Element mediumElement : mediumElements) {
       Collection<Medium> mediums = parseMediumElement(mediumElement);
@@ -88,16 +87,15 @@ public class SellmeierXMLLoader {
   }
 
   private static Collection<Medium> parseMediumElement(Element mediumElement) {
-    LinkedList<Medium> mediumList = new LinkedList<Medium>();
+    LinkedList<Medium> mediumList = new LinkedList<>();
     String symbol = mediumElement.elementText("symbol");
     String name = mediumElement.elementText("name");
     List<Element> aliasElements = mediumElement.elements("alias");
-    ArrayList<String> aliasList = new ArrayList<String>();
+    ArrayList<String> aliasList = new ArrayList<>();
     for (Element aliasElement : aliasElements) {
       aliasList.add(aliasElement.getStringValue());
     }
     List<Element> refractiveElements = mediumElement.elements("refractive");
-    ArrayList<RefractiveModel> refractiveModels = new ArrayList<RefractiveModel>();
     for (Element refractiveElement : refractiveElements) {
       DefaultRefractiveModel refractiveModel = parseRefractiveElement(refractiveElement);
       Medium medium = new Medium(symbol, name, aliasList, refractiveModel);
@@ -169,8 +167,29 @@ public class SellmeierXMLLoader {
       return new DOIReference(doi, description);
     }
     else {
-      //TODO
-      throw new UnsupportedOperationException();
+      Element referenceIDElement = referencElement.element("reference-id");
+      if (referenceIDElement != null) {
+        String referenceID = referenceIDElement.getStringValue();
+        if ("Vacuum".equals(referenceID)) {
+          return new Reference() {
+
+            @Override
+            public String getDescription() {
+              return "Vacuum";
+            }
+
+          };
+        }
+        else {
+          //TODO
+          throw new UnsupportedOperationException();
+
+        }
+      }
+      else {
+        //TODO
+        throw new UnsupportedOperationException();
+      }
     }
   }
 

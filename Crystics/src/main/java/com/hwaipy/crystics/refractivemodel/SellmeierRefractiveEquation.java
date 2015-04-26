@@ -61,6 +61,14 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
   }
 
   static {
+    register("Vacuum", new SellmeierRefractiveEquationFactory() {
+
+      @Override
+      public SellmeierRefractiveEquation newInstance(double... coefficients) {
+        return new SellmeierRefractiveEquationFormulaVacuum();
+      }
+
+    });
     register("1", new SellmeierRefractiveEquationFactory() {
 
       @Override
@@ -111,6 +119,21 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     }
 
     protected abstract DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter);
+
+  }
+
+  private static class SellmeierRefractiveEquationFormulaVacuum extends FormulaRefractiveEquation {
+
+    public SellmeierRefractiveEquationFormulaVacuum() {
+      super(null);
+    }
+
+    @Override
+    protected DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter) {
+      DerivativeStructure λ = waveLengthMicroMeter;
+      return λ.divide(λ);
+    }
+
   }
 
   private static class SellmeierRefractiveEquationFormula1 extends FormulaRefractiveEquation {
@@ -139,6 +162,7 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
       DerivativeStructure A3 = λ2.add(-C6_2).reciprocal().multiply(C5C6_2);
       return A1.add(A2).add(A3).add(C).sqrt();
     }
+
   }
 
   private static class SellmeierRefractiveEquationFormula2 extends FormulaRefractiveEquation {
@@ -154,6 +178,7 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
     protected DerivativeStructure refractiveEquation(DerivativeStructure waveLengthMicroMeter) {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
   }
 
   private static class SellmeierRefractiveEquationFormula4 extends FormulaRefractiveEquation {
@@ -174,5 +199,6 @@ public abstract class SellmeierRefractiveEquation implements RefractiveEquation 
       DerivativeStructure A2 = λ2.add(-c[7]).reciprocal().multiply(c[5]);
       return A1.add(A2).add(c[0]).sqrt();
     }
+
   }
 }

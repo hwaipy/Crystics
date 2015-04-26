@@ -9,6 +9,30 @@ and open the template in the editor.
 
 <mediums>
   <medium>
+    <symbol>Vacuum</symbol>
+    <name>Vacuum</name>
+    <refractive>
+      <range>
+        <from>0</from>
+        <to>Infinity</to>
+      </range>
+      <n>
+        <refractive-model>          
+          <system>
+            <sellmeier>
+              <formula>Vacuum</formula>
+              <coefficients>1</coefficients>
+            </sellmeier>
+          </system>
+        </refractive-model>
+      </n>
+      <reference>
+        <reference-id>Vacuum</reference-id>
+        <description>Vacuum</description>
+      </reference>
+    </refractive>
+  </medium>  
+  <medium>
     <symbol>KTiOPO4</symbol>
     <name>potassium titanyl phosphate</name>
     <alias>KTP</alias>

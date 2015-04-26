@@ -75,6 +75,17 @@ public class MediumsTest {
   }
 
   @Test
+  public void testVacuum() {
+    Medium vacuum = Mediums.getMediumByName("Vacuum");
+    MonochromaticWave w780 = λ("780nm");
+    MonochromaticWave w1550 = λ("1550nm");
+
+    assertEquals(1, vacuum.n(w780, X).getValue(""), 0.0000001);
+    Quantity gvd = vacuum.getGVD(w1550, X);
+    assertEquals(0, gvd.getValue("fs^2/mm"), 0.001);
+  }
+
+  @Test
   public void testMediumsInfo() {
     Medium fibre = Mediums.getMediumByName("Fused silica");
     MonochromaticWave w780 = λ("780nm");
