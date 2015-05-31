@@ -4,6 +4,8 @@ import com.hwaipy.crystics.filter.GaussianFilter;
 import com.hwaipy.crystics.filter.BandPassFilter;
 import com.hwaipy.crystics.filter.OpticalFilter;
 import com.hwaipy.crystics.Mediums;
+import com.hwaipy.crystics.filter.FabryPerotCavity;
+import static com.hwaipy.quantity.Quantity.Q;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,8 +30,8 @@ public class CorrelationTest {
   private static final OpticalFilter gaussian390_02 = GaussianFilter.newInstanceByWaveLengthFWHM("390nm", "0.2nm");
   private static final OpticalFilter gaussian390_0015 = GaussianFilter.newInstanceByWaveLengthFWHM("390nm", "0.015");
   private static final OpticalFilter gaussian780_0030 = GaussianFilter.newInstanceByWaveLengthFWHM("780nm", "0.030");
-  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
-  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
+  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCavity(Q("0.855"), Q("0.2535mm"));
+  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCavity(Q("0.855"), Q("0.507mm"));
 
   public static void main(String[] args) throws IOException {
     CorrelationFunction functionPump = new PumpFunction(390, 1.6);

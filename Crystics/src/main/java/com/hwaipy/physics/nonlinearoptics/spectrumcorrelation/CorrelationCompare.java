@@ -5,6 +5,7 @@ import com.hwaipy.crystics.filter.BandPassFilter;
 import com.hwaipy.crystics.filter.OpticalFilter;
 import com.hwaipy.crystics.Mediums;
 import com.hwaipy.crystics.MonochromaticWave;
+import com.hwaipy.crystics.filter.FabryPerotCavity;
 import com.hwaipy.quantity.Quantity;
 import static com.hwaipy.quantity.Quantity.Q;
 import com.hwaipy.quantity.Unit;
@@ -32,8 +33,8 @@ public class CorrelationCompare {
   private static final OpticalFilter gaussian390_02 = GaussianFilter.newInstanceByWaveLengthSigma(Q("390nm"), Q("0.2nm").divide(2.35));
   private static final OpticalFilter gaussian390_0015 = GaussianFilter.newInstanceByWaveLengthSigma(Q("390nm"), Q("0.015").divide(2.35));
   private static final OpticalFilter gaussian780_0030 = GaussianFilter.newInstanceByWaveLengthSigma(Q("780nm"), Q("0.030").divide(2.35));
-  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCaviry(0.855, 0.2535 / 1000);
-  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCaviry(0.855, 0.507 / 1000);
+  private static final OpticalFilter fpEtalon390_0015 = new FabryPerotCavity(Q("0.855"), Q("0.2535mm"));
+  private static final OpticalFilter fpEtalon780_0030 = new FabryPerotCavity(Q("0.855"), Q("0.507mm"));
 
   public static void main(String[] args) throws IOException {
     double sigmaPumpA = 0.968;//nm
@@ -90,4 +91,5 @@ public class CorrelationCompare {
     double v = (c * c * c * c);
     System.out.println(v);
   }
+
 }
