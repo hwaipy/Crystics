@@ -44,10 +44,10 @@ public class Dispersion {
 //      System.out.println(_HOM(functionJoin));
 //    System.out.println(HOM_dispertion(functionJoin, 40e-12));
 //      System.out.println((0.1 * i) + "     " + HOM_dispertion2(functionJoin, 0.1 * i, 2800e-24));
-//      System.out.println((0.15 / 200 * i) + "\t" + HOM_dispertion3(functionJoin, 0.15 / 200 * i, 2800e-24));
+      System.out.println((0.15 / 200 * i) + "\t" + HOM_dispertion4(functionJoin, 0.15 / 200 * i, 2800e-24));
 //      System.out.println((0.15 / 200 * i) + "\t" + HOM_traditional(functionJoin, 0.15 / 200 * i * 0.78 * 2800e-12));
 //    System.out.println(HOM_traditional(functionJoin, 5e-12));
-      System.out.println((0.15 / 200 * i) + "\t" + direct(0.15 / 200 * i * 0.78 * 2800));
+//      System.out.println((0.15 / 200 * i) + "\t" + direct(0.15 / 200 * i * 0.78 * 2800));
     }
   }
 
@@ -101,8 +101,68 @@ public class Dispersion {
     return e / a;
   }
 
+  private static double HOM_dispertion4(CorrelationFunction function, double delta, double t02) throws IOException {
+    Integrator E = new DISPERSION4.EIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, delta, t02);
+    Integrator A = new DISPERSION4.AIntegrator(function, minOmigaS, maxOmigaS, minOmigaI, maxOmigaI, delta);
+    double e = E.integrate(0.0001);
+    double a = A.integrate(0.0001);
+//    System.out.println(delta + "\t" + (e / a));
+    return e / a;
+  }
+
   private static double direct(double deltaT) {
     return 2 * (1 - Math.cos(50 * deltaT / 3000)) / Math.pow(deltaT * 50 / 3000, 2);
+  }
+
+  private static class DISPERSION4 {
+
+    private static class EIntegrator extends Integrator {
+
+      private final double delta;
+      private final double t02;
+
+      public EIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2, double delta, double t02) {
+        super(function, min1, max1, min2, max2);
+        this.delta = delta;
+        this.t02 = t02;
+      }
+
+      @Override
+      protected double function() {
+        double t3 = getNextRandom(min1, max1);
+        double t4 = getNextRandom(min1, max1);
+        double w2 = getNextRandom(min2, max2);
+        double w2p = getNextRandom(min2, max2);
+        double E2 = function.value((t4 + delta), w2) * function.value(t3, w2p) * function.value((t3 + delta), w2) * function.value(t4, w2p);
+        double E3 = 0.78e12 * (t3 - t4) * t02 * 0.78e12 * delta;
+//        double E = E2 * Math.cos(E3);
+        double E = Math.cos(E3);
+//        System.out.println("E: " + E);
+        return E;
+      }
+    }
+
+    private static class AIntegrator extends Integrator {
+
+      private final double deltaT;
+
+      public AIntegrator(CorrelationFunction function, double min1, double max1, double min2, double max2, double deltaT) {
+        super(function, min1, max1, min2, max2);
+        this.deltaT = deltaT;
+      }
+
+      @Override
+      protected double function() {
+        double t4 = getNextRandom(min1, max1);
+        double t3 = getNextRandom(min1, max1);
+        double w2 = getNextRandom(min2, max2);
+        double w2p = getNextRandom(min2, max2);
+        double result = function.value(t4 + deltaT, w2) * function.value(t3, w2p);
+//        System.out.println("A: " + result * result);
+        return result * result;
+      }
+
+    }
   }
 
   private static class DISPERSION3 {
