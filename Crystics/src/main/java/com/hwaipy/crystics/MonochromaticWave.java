@@ -63,6 +63,18 @@ public class MonochromaticWave {
     return ν(ν().plus(dν));
   }
 
+  public MonochromaticWave sumFrequency(MonochromaticWave second) {
+    return shiftByFrequency(second.ν());
+  }
+
+  public MonochromaticWave differenceFrequency(MonochromaticWave second) {
+    return shiftByFrequency(second.ν().negate());
+  }
+
+  public MonochromaticWave doubleFrequency() {
+    return shiftByFrequency(ν());
+  }
+
   public Quantity ω() {
     return getAngularFrequency();
   }
@@ -173,4 +185,5 @@ public class MonochromaticWave {
     monochromaticWave.angularFrequency = angularFrequency;
     return monochromaticWave;
   }
+
 }
