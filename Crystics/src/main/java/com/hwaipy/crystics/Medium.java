@@ -15,7 +15,7 @@ public class Medium {
 
   private final String symbol;
   private final String name;
-  private final ArrayList<String> aliasList = new ArrayList<String>();
+  private final ArrayList<String> aliasList = new ArrayList<>();
   private final DefaultRefractiveModel refractiveModel;
 
   public Medium(String symbol, String name, ArrayList<String> aliasList, DefaultRefractiveModel refractiveModel) {

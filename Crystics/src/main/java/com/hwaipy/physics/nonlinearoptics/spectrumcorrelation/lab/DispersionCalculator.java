@@ -2,6 +2,8 @@ package com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.lab;
 
 import com.hwaipy.crystics.Mediums;
 import com.hwaipy.crystics.MonochromaticWave;
+import static com.hwaipy.crystics.MonochromaticWave.λ;
+import static com.hwaipy.crystics.MonochromaticWave.ω;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationFunction;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.CorrelationPloter;
 import com.hwaipy.physics.nonlinearoptics.spectrumcorrelation.JointFunction;
@@ -17,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javax.imageio.ImageIO;
+import static org.apache.commons.math3.util.FastMath.*;
 
 /**
  *
@@ -24,14 +27,14 @@ import javax.imageio.ImageIO;
  */
 public class DispersionCalculator {
 
-  private static final Quantity FIBER_LENGTH = Q("100km");//km
+  private static final Quantity FIBER_LENGTH = Q("100km");
   private static final MonochromaticWave CENTER_S = MonochromaticWave.λ("1550nm");
 
   public static void main(String[] args) throws IOException {
-//    double minOmigaS = 1549;
-//    double maxOmigaS = 1551;
-//    double minOmigaI = 1549;
-//    double maxOmigaI = 1551;
+    double minOmigaS = 1549;
+    double maxOmigaS = 1551;
+    double minOmigaI = 1549;
+    double maxOmigaI = 1551;
     Quantity tou02 = Q("-28ps^2/km").multiply(FIBER_LENGTH);
 
     CorrelationFunction functionPump = new PumpFunction(775, 0.36);
@@ -39,42 +42,43 @@ public class DispersionCalculator {
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
 //    plot(functionJoin, "filtered", minOmigaS, maxOmigaS, minOmigaI, maxOmigaI);
 
-    DispersionCalculator dc = new DispersionCalculator(functionJoin, tou02, Q("4ns"), Q("0s"), Q("0s"), Q("1549nm"), Q("1551nm"), 200, 200);
-//    for (int i = -200; i <= 200; i++) {
-//      double delta = 0.01145;
-//      minOmigaS = 1550 - delta;
-//      maxOmigaS = 1550 + delta;
-//      minOmigaI = 1550 - delta;
-//      maxOmigaI = 1550 + delta;
-//      System.out.println((0.15 / 200 * i) + "\t" + HOM_dispertion4(functionJoin, 0.15 / 200 * i, 2800e-24));
-//    }
+    DispersionCalculator dc = new DispersionCalculator(functionJoin, tou02, Q("4ns"), Q("150ps"), Q("30ps"), Q("2ns"), λ("1550nm").ω(), λ("1551nm").ω(), λ("1549nm").ω(), 50, 50);
 
-//    dc.outputVFT0();
+    double[] ae = dc.calculateForAE(Q("0s"));
+    System.out.println(ae[1]);
+    System.out.println(ae[0]);
+    System.out.println(ae[1] / ae[0]);
+//        dc.outputVFT0();
   }
 
   private final CorrelationFunction phy;
   private final Quantity tou02;
   private final Quantity Td;
   private final Quantity T;
-  private final Quantity deltaT;
+  private final Quantity deltaT1;
+  private final Quantity deltaT2;
   private final Quantity w2Min;
   private final Quantity w2Max;
   private final int stepOfT0;
   private final int stepOfW;
   private final Quantity[] vT0;
   private final double[] vfT0;
+  private final Quantity centerW1;
 
-  public DispersionCalculator(CorrelationFunction phy, Quantity tou02, Quantity Td, Quantity T, Quantity deltaT,
+  public DispersionCalculator(CorrelationFunction phy, Quantity tou02, Quantity Td, Quantity T,
+          Quantity deltaT1, Quantity deltaT2, Quantity centerW1,
           Quantity w2min, Quantity w2max, int stepOfT0, int stepOfW) {
     this.phy = phy;
     this.tou02 = tou02;
     this.Td = Td;
     this.T = T;
-    this.deltaT = deltaT;
+    this.deltaT1 = deltaT1;
+    this.deltaT2 = deltaT2;
     this.w2Min = w2min;
     this.w2Max = w2max;
     this.stepOfT0 = stepOfT0;
     this.stepOfW = stepOfW;
+    this.centerW1 = centerW1;
     vT0 = new Quantity[stepOfT0];
     vfT0 = new double[stepOfT0];
 
@@ -91,32 +95,67 @@ public class DispersionCalculator {
 
         @Override
         public Quantity value(Quantity w2) {
-          double p = valueOfPhy(w1.λ(), w2);
-          return new Quantity(p * p, U("m^-1"));
+          double p = valueOfPhy(w1.ω(), w2);
+          return new Quantity(p * p, U("Hz^-1"));
         }
+
       };
       vT0[i] = T0;
       vfT0[i] = fT0.integrate().getValue(Units.DIMENSIONLESS);
     }
   }
 
-  public double calculateForV() {
-    double r = 0;
-    for (int i = 0; i < vT0.length; i++) {
-      r += calculateForV(vT0[i], vfT0[i]);
-    }
-    return r;
-  }
-
-  public double calculateForV(Quantity T0, double fT0) {
+//  public double calculateForV() {
+//    double r = 0;
+//    for (int i = 0; i < vT0.length; i++) {
+//      r += calculateForV(vT0[i], vfT0[i]);
+//    }
+//    return r;
+//  }
+  public double[] calculateForAE(Quantity T0) {
     double[][] vPhy = new double[stepOfW][stepOfW];
-    double[][] vPhyDT = new double[stepOfW][stepOfW];
+    double[][] vPhyDT1 = new double[stepOfW][stepOfW];
+    double[][] vPhyDT2 = new double[stepOfW][stepOfW];
+    double[][] vPhyDT12 = new double[stepOfW][stepOfW];
     Quantity t1Min = T0.minus(T.divide(2));
     Quantity t1Max = T0.plus(T.divide(2));
     Quantity binT1 = t1Max.minus(t1Min).divide(stepOfW - 1);
     Quantity binW2 = w2Max.minus(w2Min).divide(stepOfW - 1);
+    for (int i1 = 0; i1 < stepOfW; i1++) {
+      for (int i2 = 0; i2 < stepOfW; i2++) {
+        Quantity t1 = t1Min.plus(binT1.multiply(i1));
+        Quantity w2 = w2Min.plus(binW2.multiply(i2));
+        Quantity w1 = t1.divide(tou02).plus(centerW1);
+        Quantity w1d1 = t1.plus(deltaT1).divide(tou02).plus(centerW1);
+        Quantity w1d2 = t1.plus(deltaT2).divide(tou02).plus(centerW1);
+        Quantity w1d12 = t1.plus(deltaT1).plus(deltaT2).divide(tou02).plus(centerW1);
+        vPhy[i1][i2] = valueOfPhy(w1, w2);
+        vPhyDT1[i1][i2] = valueOfPhy(w1d1, w2);
+        vPhyDT2[i1][i2] = valueOfPhy(w1d2, w2);
+        vPhyDT12[i1][i2] = valueOfPhy(w1d12, w2);
+      }
+    }
 
-    return 0;
+    double A = 0;
+    double E = 0;
+    for (int iTheta3 = 0; iTheta3 < stepOfW; iTheta3++) {
+      for (int iTheta4 = 0; iTheta4 < stepOfW; iTheta4++) {
+        for (int iW2 = 0; iW2 < stepOfW; iW2++) {
+          for (int iW2p = 0; iW2p < stepOfW; iW2p++) {
+            double v1 = vPhyDT12[iTheta4][iW2];
+            double v2 = vPhy[iTheta3][iW2p];
+            double v3 = vPhyDT1[iTheta3][iW2];
+            double v4 = vPhyDT2[iTheta4][iW2p];
+            A += pow(v1 * v2, 2) + pow(v3 * v4, 2);
+            double e = v1 * v2 * v3 * v4;
+            double c = binT1.multiply(iTheta3 - iTheta4).multiply(deltaT1).divide(tou02).getValue(Units.DIMENSIONLESS);
+            E += 2 * e * cos(c);
+          }
+        }
+      }
+    }
+
+    return new double[]{A, E};
   }
 
   public void outputVFT0() {
@@ -128,27 +167,8 @@ public class DispersionCalculator {
     }
   }
 
-//  public void speedTest() {
-//    long t1 = System.nanoTime();
-//    for (int i = 0; i < stepOfW * stepOfW; i++) {
-//      valueOfPhy(w2min, w2max);
-//    }
-//    long t2 = System.nanoTime();
-//    for (int i11 = 0; i11 < stepOfW; i11++) {
-//      for (int i12 = 0; i12 < stepOfW; i12++) {
-//        for (int i21 = 0; i21 < stepOfW; i21++) {
-//          for (int i22 = 0; i22 < stepOfW; i22++) {
-//            double d = vPhy[i11][i22] * vPhy[i11][i21] * vPhy[i12][i22] * vPhy[i12][i21];
-//          }
-//        }
-//      }
-//    }
-//    long t3 = System.nanoTime();
-//    System.out.println((t2 - t1) / 1.e9);
-//    System.out.println((t3 - t2) / 1.e9);
-//  }
-  private double valueOfPhy(Quantity lamda1, Quantity lamda2) {
-    return phy.value(lamda1.getValue("nm"), lamda2.getValue("nm"));
+  private double valueOfPhy(Quantity omega1, Quantity omega2) {
+    return phy.value(ω(omega1).λ().getValue("nm"), ω(omega2).λ().getValue("nm"));
   }
 
   private static void plot(CorrelationFunction function, String name, double minOmigaS, double maxOmigaS, double minOmigaI, double maxOmigaI) throws IOException {
@@ -158,4 +178,5 @@ public class DispersionCalculator {
     Path path = Paths.get("./input-output/");
     ImageIO.write(image, "png", new File(path.toFile(), name + ".png"));
   }
+
 }
