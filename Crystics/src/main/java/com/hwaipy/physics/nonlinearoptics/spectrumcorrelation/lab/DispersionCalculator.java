@@ -31,10 +31,6 @@ public class DispersionCalculator {
   private static final MonochromaticWave CENTER_S = MonochromaticWave.λ("1550nm");
 
   public static void main(String[] args) throws IOException {
-    double minOmigaS = 1549;
-    double maxOmigaS = 1551;
-    double minOmigaI = 1549;
-    double maxOmigaI = 1551;
     Quantity tou02 = Q("-28ps^2/km").multiply(FIBER_LENGTH);
 
     CorrelationFunction functionPump = new PumpFunction(775, 0.36);
@@ -42,7 +38,7 @@ public class DispersionCalculator {
     CorrelationFunction functionJoin = new JointFunction(functionPhaseMatch, functionPump);
 //    plot(functionJoin, "filtered", minOmigaS, maxOmigaS, minOmigaI, maxOmigaI);
 
-    DispersionCalculator dc = new DispersionCalculator(functionJoin, tou02, Q("4ns"), Q("150ps"), Q("30ps"), Q("2ns"), λ("1550nm").ω(), λ("1551nm").ω(), λ("1549nm").ω(), 50, 50);
+    DispersionCalculator dc = new DispersionCalculator(functionJoin, tou02, Q("4ns"), Q("100ps"), Q("100ps"), Q("80ps"), λ("1550nm").ω(), λ("1551nm").ω(), λ("1549nm").ω(), 20, 20);
 
     double[] ae = dc.calculateForAE(Q("0s"));
     System.out.println(ae[1]);
@@ -61,8 +57,6 @@ public class DispersionCalculator {
   private final Quantity w2Max;
   private final int stepOfT0;
   private final int stepOfW;
-  private final Quantity[] vT0;
-  private final double[] vfT0;
   private final Quantity centerW1;
 
   public DispersionCalculator(CorrelationFunction phy, Quantity tou02, Quantity Td, Quantity T,
@@ -79,14 +73,12 @@ public class DispersionCalculator {
     this.stepOfT0 = stepOfT0;
     this.stepOfW = stepOfW;
     this.centerW1 = centerW1;
-    vT0 = new Quantity[stepOfT0];
-    vfT0 = new double[stepOfT0];
 
-    init();
+//    init();
   }
 
-  private void init() {
-    //Init f(T0)
+  public double[] calculateFT0() {
+    double[] vfT0 = new double[stepOfT0];
     Quantity binOfT0 = Td.multiply(2. / (vfT0.length - 1));
     for (int i = 0; i < vfT0.length; i++) {
       final Quantity T0 = binOfT0.multiply(i).minus(Td);
@@ -100,18 +92,11 @@ public class DispersionCalculator {
         }
 
       };
-      vT0[i] = T0;
       vfT0[i] = fT0.integrate().getValue(Units.DIMENSIONLESS);
     }
+    return vfT0;
   }
 
-//  public double calculateForV() {
-//    double r = 0;
-//    for (int i = 0; i < vT0.length; i++) {
-//      r += calculateForV(vT0[i], vfT0[i]);
-//    }
-//    return r;
-//  }
   public double[] calculateForAE(Quantity T0) {
     double[][] vPhy = new double[stepOfW][stepOfW];
     double[][] vPhyDT1 = new double[stepOfW][stepOfW];
@@ -148,7 +133,7 @@ public class DispersionCalculator {
             double v4 = vPhyDT2[iTheta4][iW2p];
             A += pow(v1 * v2, 2) + pow(v3 * v4, 2);
             double e = v1 * v2 * v3 * v4;
-            double c = binT1.multiply(iTheta3 - iTheta4).multiply(deltaT1).divide(tou02).getValue(Units.DIMENSIONLESS);
+            double c = binT1.multiply(iTheta3 - iTheta4).minus(deltaT2).multiply(deltaT1).divide(tou02).getValue(Units.DIMENSIONLESS);
             E += 2 * e * cos(c);
           }
         }
@@ -156,15 +141,6 @@ public class DispersionCalculator {
     }
 
     return new double[]{A, E};
-  }
-
-  public void outputVFT0() {
-    System.out.println("ps\t");
-    for (int i = 0; i < vfT0.length; i++) {
-      Quantity binOfT0 = Td.multiply(2. / (vfT0.length - 1));
-      final Quantity T0 = binOfT0.multiply(i).minus(Td);
-      System.out.println(T0.getValue("ps") + "\t" + vfT0[i]);
-    }
   }
 
   private double valueOfPhy(Quantity omega1, Quantity omega2) {
